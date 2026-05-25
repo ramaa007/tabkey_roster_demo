@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 100" width="100%" height="100%">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#005C9A" />
+      <stop offset="100%" stop-color="#0ea5e9" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#005C9A" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- Keycap Icon -->
+  <g filter="url(#shadow)">
+    <!-- Outer Keycap Border / Plate -->
+    <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#iconGrad)" />
+    <!-- Inner keycap bevel/highlight for realistic depth -->
+    <rect x="15" y="15" width="70" height="70" rx="16" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2" />
+    
+    <!-- Tab Symbol (Arrow pointing to vertical bar) -->
+    <!-- Vertical Bar on the right -->
+    <line x1="68" y1="32" x2="68" y2="68" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+    <!-- Horizontal Arrow Shaft -->
+    <line x1="28" y1="50" x2="62" y2="50" stroke="#ffffff" stroke-width="6" stroke-linecap="round" />
+    <!-- Arrow Head -->
+    <path d="M 48 34 L 64 50 L 48 66" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Keyboard Tab key subtle loop/notch -->
+    <path d="M 28 32 L 28 40" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-opacity="0.5" />
+  </g>
+
+  <!-- Text Branding -->
+  <g transform="translate(110, 0)">
+    <!-- "Tab" Text -->
+    <text x="0" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="46" fill="#1e293b" letter-spacing="-1.5">Tab</text>
+    <!-- "Key" Text -->
+    <text x="78" y="65" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="900" font-size="46" fill="url(#iconGrad)" letter-spacing="-1.5">Key</text>
+    
+    <!-- DEMO Badge -->
+    <g transform="translate(174, 30)">
+      <!-- Pill Badge Background -->
+      <rect x="0" y="0" width="68" height="26" rx="8" fill="#1e293b" />
+      <!-- Pill Badge Text -->
+      <text x="34" y="17" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-weight="800" font-size="11" fill="#ffffff" letter-spacing="1" text-anchor="middle">DEMO</text>
+    </g>
+  </g>
+</svg>
