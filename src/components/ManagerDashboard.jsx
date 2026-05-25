@@ -55,7 +55,12 @@ function getWeekDates(offsetWeeks = 0) {
 
 export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   const [managerTab, setManagerTab] = useState('dashboard'); // dashboard, roster, time, swaps, leave, docs, staff, reports, payroll, settings
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [managerViewMode, setManagerViewMode] = useState('desktop'); // desktop, mobile
+
+  useEffect(() => {
+    setShowMobileSidebar(false);
+  }, [managerTab]);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [activeMobileDate, setActiveMobileDate] = useState(() => {
     const todayStr = new Date().toISOString().split('T')[0];
@@ -496,7 +501,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       
       fetchData();
       setLoadingOverlay(false);
-      alert("TabKey Workforce AI Co-Pilot filled 28 unassigned award-compliant drafts! Click 'Publish Roster' to launch.");
+      alert("Cinnabon Carindale AI Co-Pilot filled 28 unassigned award-compliant drafts! Click 'Publish Roster' to launch.");
     }, 1000);
   };
 
@@ -1893,6 +1898,26 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 className="w-full p-3 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl outline-none font-bold text-slate-700 dark:text-slate-300"
               />
             </div>
+
+            <div className="space-y-1">
+              <label className="text-[8px] font-bold font-display uppercase text-slate-400 dark:text-slate-500 block">Corporate Logo Image URL</label>
+              <input 
+                type="text"
+                placeholder="e.g. https://squareconnect.com.au/assets/logo.png"
+                value={localStorage.getItem('custom_logo_url') || ''}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  if (url) {
+                    localStorage.setItem('custom_logo_url', url);
+                  } else {
+                    localStorage.removeItem('custom_logo_url');
+                  }
+                  setCompactMode(prev => !prev);
+                  setTimeout(() => setCompactMode(prev => !prev), 0);
+                }}
+                className="w-full p-3 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl outline-none font-semibold text-slate-700 dark:text-slate-300"
+              />
+            </div>
             
             <div className="flex items-center justify-between py-2 border-b border-slate-50">
               <div>
@@ -1936,7 +1961,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
           <div className="flex items-center gap-2.5 select-none">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold font-display text-xs shadow-inner shadow-indigo-700/50">TK</div>
             <div>
-              <h1 className="text-sm font-bold font-display text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight leading-none">TabKey Store Manager</h1>
+              <h1 className="text-sm font-bold font-display text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight leading-none">Cinnabon Carindale Manager</h1>
               <p className="text-[8px] text-slate-400 dark:text-slate-500 dark:text-slate-500 dark:text-slate-450 font-semibold tracking-widest uppercase mt-0.5">Mobile Console</p>
             </div>
           </div>
@@ -2091,10 +2116,10 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             </button>
           </div>
 
-          {/* iPhone simulated device bezel */}
-          <div className="w-full h-full max-w-[390px] max-h-[760px] md:w-[390px] md:h-[760px] rounded-[3.25rem] border-[14px] border-slate-900 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] bg-[#f8fafc] dark:bg-[#090a0f] flex flex-col relative overflow-hidden outline outline-2 outline-white/5 shrink-0 text-left z-20">
+          {/* iPhone simulated device bezel - only styled on desktop viewports */}
+          <div className="w-full h-full md:max-w-[390px] md:max-h-[760px] md:w-[390px] md:h-[760px] md:rounded-[3.25rem] md:border-[14px] md:border-slate-900 md:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] bg-[#f8fafc] dark:bg-[#090a0f] flex flex-col relative overflow-hidden md:outline md:outline-2 md:outline-white/5 shrink-0 text-left z-20">
             {/* iOS Status Bar */}
-            <div className="flex shrink-0 h-10 w-full bg-white dark:bg-[#12131a] items-center justify-between px-6 pt-4 text-[10px] font-bold text-slate-800 dark:text-slate-200 relative z-30 select-none">
+            <div className="hidden md:flex shrink-0 h-10 w-full bg-white dark:bg-[#12131a] items-center justify-between px-6 pt-4 text-[10px] font-bold text-slate-800 dark:text-slate-200 relative z-30 select-none">
               <span>9:41</span>
               <div className="w-24 h-5.5 bg-[#090a0f] dark:bg-[#090a0f] rounded-full absolute top-2.5 left-1/2 transform -translate-x-1/2 flex items-center justify-center">
                 <div className="w-2 h-2 rounded-full bg-slate-850 absolute right-4 animate-pulse" />
@@ -2113,7 +2138,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             </div>
 
             {/* iOS Home Indicator Bar */}
-            <div className="h-5 w-full bg-white dark:bg-[#12131a] flex items-center justify-center shrink-0 pb-1 z-35 select-none pointer-events-none">
+            <div className="hidden md:flex h-5 w-full bg-white dark:bg-[#12131a] flex items-center justify-center shrink-0 pb-1 z-35 select-none pointer-events-none">
               <div className="w-28 h-1 bg-slate-800 rounded-full" />
             </div>
           </div>
@@ -2123,19 +2148,31 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       {managerViewMode === 'desktop' && (
         <>
           {/* Sidebar navigation */}
-          <aside className="w-full md:w-64 bg-white dark:bg-[#12131a] border-r border-[#e2e8f0] dark:border-[#1f212e] flex flex-col shrink-0">
+          <aside className="w-full md:w-64 bg-white dark:bg-[#12131a] border-b md:border-b-0 md:border-r border-[#e2e8f0] dark:border-[#1f212e] flex flex-col shrink-0">
             <div className="p-6 border-b border-[#e2e8f0] dark:border-[#1f212e] flex items-center justify-between shrink-0">
               <div className="flex flex-col">
-                <h1 className="text-base font-bold font-display text-indigo-600 leading-none">TabKey Workforce</h1>
+                <h1 className="text-base font-bold font-display text-indigo-600 leading-none">Cinnabon Carindale</h1>
                 <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">Roster Solution</p>
               </div>
-              <button 
-                onClick={onLogout}
-                className="md:hidden p-2 hover:bg-rose-50 text-slate-400 dark:text-slate-500 hover:text-rose-500 rounded-xl transition-all cursor-pointer"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1.5 md:hidden">
+                <button 
+                  onClick={() => setShowMobileSidebar(!showMobileSidebar)}
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-[#12131a]/5 hover:text-indigo-650 text-slate-400 dark:text-slate-500 rounded-xl transition-all cursor-pointer border border-[#e2e8f0] dark:border-[#1f212e]"
+                  title="Toggle Menu"
+                >
+                  <Sliders className="w-4 h-4" />
+                </button>
+                <button 
+                  onClick={onLogout}
+                  className="p-2 hover:bg-rose-50 text-slate-400 dark:text-slate-500 hover:text-rose-500 rounded-xl transition-all cursor-pointer border border-[#e2e8f0] dark:border-[#1f212e]"
+                  title="Sign Out"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
             </div>
+
+            <div className={`${showMobileSidebar ? 'block' : 'hidden md:block'} flex-grow flex flex-col overflow-y-auto`}>
 
             {/* Premium Desktop/Mobile View Switcher in sidebar */}
             <div className="p-4 border-b border-[#e2e8f0] dark:border-[#1f212e] shrink-0">
@@ -2340,7 +2377,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             </button>
           </div>
         </div>
-      </aside>
+      </div>
+    </aside>
 
       {/* Main Administrative Portal Viewport */}
       <main className="flex-grow p-4 md:p-8 overflow-y-auto h-full min-w-0">
@@ -2460,7 +2498,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                         <Zap className="w-4 h-4 shrink-0 text-indigo-600 mt-0.5" />
                         <div>
                           {weatherMock === 'Rainy' && (
-                            <p>☔ **Rainy weather forecasted!** Retail foot traffic spikes during standard coffee hours. **Estimated +25% revenue.** Staff shortages may occur during standard 11AM-2PM coffee runs. We recommend adding 1 backup casual shift.</p>
+                            <p>☔ **Rainy weather forecasted!** Cinnabon sales spike for hot cinnamon rolls & coffee. **Estimated +25% revenue.** Staff shortages may occur during standard 11AM-2PM coffee runs. We recommend adding 1 backup casual shift.</p>
                           )}
                           {weatherMock === 'Sunny' && (
                             <p>☀️ **Warm & Sunny!** High mall traffic increases footfalls. **Estimated +15% cold sweets sales.** Roster is currently optimal for capacity.</p>
@@ -2738,7 +2776,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       lateStaffList.map(item => {
                         const phone = item.employee?.phone || "0400000000";
                         const name = item.employee?.full_name || "Staff";
-                        const whatsappUrl = `https://wa.me/${phone.replace(/\s+/g, '')}?text=Hey%20${encodeURIComponent(name)},%20just%20checking%20in%20on%20your%20scheduled%20TabKey%20shift%20today!%20Hope%20everything%20is%20alright.`;
+                        const whatsappUrl = `https://wa.me/${phone.replace(/\s+/g, '')}?text=Hey%20${encodeURIComponent(name)},%20just%20checking%20in%20on%20your%20scheduled%20Cinnabon%20shift%20today!%20Hope%20everything%20is%20alright.`;
 
                         return (
                           <div key={item.shift.id} className="flex justify-between items-center bg-rose-50 border border-rose-100 rounded-xl p-3">
@@ -2841,7 +2879,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
 
                 <div className="mt-4 p-3 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[9px] text-slate-400 dark:text-slate-500 font-bold">
-                  🌀 Birthday triggers render branded HTML cards with special TabKey discounts and greetings.
+                  🌀 Birthday triggers render branded HTML cards with special Cinnabon discounts and greetings.
                 </div>
               </div>
 
@@ -3011,7 +3049,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                     </button>
                   </form>
 
-                  {/* TabKey Time-wise Preset Shortcuts */}
+                  {/* Cinnabon Time-wise Preset Shortcuts */}
                   <div className="mt-4 pt-3 border-t border-[#e2e8f0] dark:border-[#1f212e] space-y-2">
                     <p className="text-[9px] font-bold font-display uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none">⚡ 1-Click Time-wise Presets</p>
                     
@@ -4388,7 +4426,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
                 
                 <h4 className="font-bold font-display text-slate-800 dark:text-slate-200 text-sm mt-4 leading-none">Xero Connection: Active</h4>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Tenant ID: tabkey-aus-1002</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Tenant ID: cinnabon-aus-9821</p>
 
                 <div className="w-full bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-[10px] text-emerald-800 font-bold mt-4 select-none">
                   OAuth token authenticated successfully. Pushes will arrive in Draft Payroll instantly.
@@ -5048,7 +5086,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </p>
               <textarea 
                 rows={6}
-                placeholder="Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours&#10;Gigi Hadid,gigi@tabkey.com.au,0499 999 999,2001-04-23,Casual,29.23,0&#10;Zayn Malik,zayn@tabkey.com.au,0488 888 888,1998-01-12,Part-Time,32.50,25"
+                placeholder="Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours&#10;Gigi Hadid,gigi@cinnaboncarindale.com.au,0499 999 999,2001-04-23,Casual,29.23,0&#10;Zayn Malik,zayn@cinnaboncarindale.com.au,0488 888 888,1998-01-12,Part-Time,32.50,25"
                 value={csvText}
                 onChange={(e) => setCsvText(e.target.value)}
                 className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-mono text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
@@ -5058,7 +5096,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             <div className="flex justify-between items-center pt-2">
               <button 
                 onClick={() => {
-                  setCsvText("Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours\nJulian Alvarez,julian@tabkey.com.au,0412 999 888,2000-01-31,Casual,29.23,0\nKylie Jenner,kylie@tabkey.com.au,0423 777 666,1999-08-10,Part-Time,33.50,20");
+                  setCsvText("Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours\nJulian Alvarez,julian@cinnaboncarindale.com.au,0412 999 888,2000-01-31,Casual,29.23,0\nKylie Jenner,kylie@cinnaboncarindale.com.au,0423 777 666,1999-08-10,Part-Time,33.50,20");
                 }}
                 className="text-[10px] font-bold font-display text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer"
               >
@@ -5097,19 +5135,19 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             </div>
  
             <div>
-              <h3 className="font-bold font-display text-2xl text-slate-800 dark:text-slate-200 tracking-tight leading-none">Staff Birthday Greeting</h3>
+              <h3 className="font-bold font-display text-2xl text-slate-800 dark:text-slate-200 tracking-tight leading-none">Cinnabon Birthday Wish</h3>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Branded HTML template ready for broadcast</p>
             </div>
  
             <div className="bg-white dark:bg-[#12131a] border border-[#EADCC6]/60 rounded-xl p-5 text-left text-slate-800 dark:text-slate-200 space-y-2 relative shadow-md">
-              <span className="text-[7px] font-bold font-display uppercase tracking-widest text-amber-800 bg-amber-50 px-2 py-0.5 rounded">Birthday Voucher Card</span>
+              <span className="text-[7px] font-bold font-display uppercase tracking-widest text-amber-800 bg-amber-50 px-2 py-0.5 rounded">Cinnabon Birthday Card template</span>
               <p className="text-xs font-bold font-display text-slate-850">To: {birthdayEmployee.full_name} ({birthdayEmployee.email})</p>
               <p className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 leading-relaxed pt-2 border-t border-[#e2e8f0] dark:border-[#1f212e] font-medium">
                 "Happy Birthday {birthdayEmployee.full_name}! 🌀✨ <br />
-                We are so incredibly grateful for your great work at our TabKey store! 
+                We are so incredibly grateful for your great work at our Cinnabon store! 
                 As a birthday token, here is a voucher for a **Free Box of 4 Cinnamon Scrolls** on your next shift. <br />
                 Have an amazing day! <br />
-                - Sarah and the Roster Team."
+                - Sarah and the Cinnabon Team."
               </p>
             </div>
  
@@ -5123,7 +5161,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               <button 
                 onClick={() => {
                   setShowBirthdayModal(false);
-                  alert(`Branded TabKey email greeting and voucher successfully dispatched to ${birthdayEmployee.full_name}!`);
+                  alert(`Branded Cinnabon email greeting and voucher successfully dispatched to ${birthdayEmployee.full_name}!`);
                 }}
                 className="flex-grow py-3.5 bg-indigo-650 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[10px] uppercase tracking-wider shadow-md shadow-indigo-600/20 transition-all cursor-pointer active:scale-95"
               >
@@ -5214,10 +5252,10 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                   <div className="flex justify-between items-center pb-5 border-b border-[#e2e8f0] dark:border-[#1f212e] select-none">
                     <div className="flex items-center gap-3">
                       <div className="px-4 py-2 bg-indigo-950 text-white font-serif tracking-widest text-lg font-bold font-display uppercase rounded shadow-inner flex items-center justify-center">
-                        TABKEY
+                        CINNABON
                       </div>
                       <div className="text-left">
-                        <h1 className="text-sm font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Westfield Store Roster</h1>
+                        <h1 className="text-sm font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Cinnabon Westfield Carindale</h1>
                         <p className="text-[10px] text-indigo-600 font-bold uppercase tracking-wider mt-1">Compliance Audit Log</p>
                       </div>
                     </div>
@@ -5371,7 +5409,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 <input 
                   type="email" 
                   required
-                  placeholder="e.g. patel@tabkey.com.au"
+                  placeholder="e.g. patel@cinnaboncarindale.com.au"
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
                   className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
@@ -5472,7 +5510,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 <input 
                   type="email" 
                   required
-                  placeholder="e.g. patel@tabkey.com.au"
+                  placeholder="e.g. patel@cinnaboncarindale.com.au"
                   value={editingEmployee.email}
                   onChange={(e) => setEditingEmployee(prev => ({ ...prev, email: e.target.value }))}
                   className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"

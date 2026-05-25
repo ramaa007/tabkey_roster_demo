@@ -7,6 +7,7 @@ import logo from '../assets/logo.svg';
 import Swal from 'sweetalert2';
 
 export default function KioskPortal({ onPortalSwitch }) {
+  const logoUrl = localStorage.getItem('custom_logo_url') || logo;
   const [pin, setPin] = useState('');
   const [profiles, setProfiles] = useState([]);
   const [authenticatedStaff, setAuthenticatedStaff] = useState(null);
@@ -99,7 +100,7 @@ export default function KioskPortal({ onPortalSwitch }) {
       Swal.fire({
         icon: 'success',
         title: 'Clock In Successful! 🌀',
-        html: `Have an amazing shift, <strong>${authenticatedStaff.full_name}</strong>!<br/>Time to schedule some awesome shifts! 📅`,
+        html: `Have an amazing shift, <strong>${authenticatedStaff.full_name}</strong>!<br/>Time to bake some fresh, warm Cinnabons!`,
         confirmButtonColor: '#10b981'
       });
       
@@ -127,7 +128,7 @@ export default function KioskPortal({ onPortalSwitch }) {
       Swal.fire({
         icon: 'success',
         title: 'Break Complete 💪',
-        text: `Welcome back on line, ${authenticatedStaff.full_name}. Let's manage some excellent rosters!`,
+        text: `Welcome back on line, ${authenticatedStaff.full_name}. Let's bake some delicious Cinnabons!`,
         confirmButtonColor: '#10b981'
       });
 
@@ -229,7 +230,7 @@ export default function KioskPortal({ onPortalSwitch }) {
               {orientation === 'portrait' ? (
                 /* Portrait stacked layout */
                 <div className="flex flex-col space-y-6 text-center">
-                  <img src={logo} alt="TabKey Logo" className="h-9 w-auto mx-auto dark:brightness-110" />
+                  <img src={logoUrl} alt="Cinnabon Logo" className="h-9 w-auto mx-auto dark:brightness-110" />
                   
                   <div>
                     <h2 className="text-xl font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">PIN Kiosk</h2>
@@ -286,15 +287,15 @@ export default function KioskPortal({ onPortalSwitch }) {
                 <div className="grid grid-cols-12 gap-6 items-center">
                   {/* Left Column: Branding / Info */}
                   <div className="col-span-5 flex flex-col space-y-4 border-r border-[#e2e8f0] dark:border-white/5 pr-6 h-full justify-center text-center md:text-left">
-                    <img src={logo} alt="TabKey Logo" className="h-9 w-auto mx-auto md:mx-0 dark:brightness-110" />
+                    <img src={logoUrl} alt="Cinnabon Logo" className="h-9 w-auto mx-auto md:mx-0 dark:brightness-110" />
                     <div>
                       <h2 className="text-xl font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none mt-2">PIN Kiosk</h2>
-                      <p className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-widest mt-1">TabKey Attendance Terminal</p>
+                      <p className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-widest mt-1">Cinnabon Attendance Terminal</p>
                     </div>
                     <div className="bg-white dark:bg-white/5 border border-[#e2e8f0] dark:border-white/10 p-3.5 rounded-xl text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed font-semibold">
                       <p className="text-indigo-650 dark:text-indigo-300 font-black uppercase text-[8px] tracking-widest mb-1">Store Information</p>
-                      Westfield Store Roster<br/>
-                      Get TabKeys Round & Tasty! 🌀
+                      Cinnabon Westfield Carindale<br/>
+                      Get Cinnabons Round & Tasty! 🌀
                     </div>
                   </div>
 
@@ -366,7 +367,7 @@ export default function KioskPortal({ onPortalSwitch }) {
                     <div>
                       <h2 className="text-xl font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">{authenticatedStaff.full_name}</h2>
                       <p className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-widest mt-2">
-                        Team Member
+                        Cinnabon Team Member
                       </p>
                     </div>
                   </div>
@@ -432,7 +433,7 @@ export default function KioskPortal({ onPortalSwitch }) {
                     <div>
                       <h2 className="text-lg font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">{authenticatedStaff.full_name}</h2>
                       <p className="text-[10px] text-indigo-650 dark:text-indigo-400 font-bold uppercase tracking-widest mt-1.5">
-                        Team Member
+                        Cinnabon Team Member
                       </p>
                     </div>
                     <button 

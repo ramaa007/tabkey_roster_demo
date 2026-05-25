@@ -3,6 +3,7 @@ import logo from '../assets/logo.svg';
 import { supabase } from '../core/mock-db';
 
 export default function LoginPortal({ onLoginSuccess }) {
+  const logoUrl = localStorage.getItem('custom_logo_url') || logo;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -55,10 +56,10 @@ export default function LoginPortal({ onLoginSuccess }) {
 
       {/* Main Login Card */}
       <div className="bg-white dark:bg-[#12131a] max-w-md w-full rounded-xl p-8 md:p-10 shadow-sm dark:shadow-2xl border border-[#e2e8f0] dark:border-[#1f212e] text-center relative z-10 shrink-0 my-auto animate-fade-in transition-all duration-250">
-        <img src={logo} alt="TabKey Logo" className="w-48 h-auto object-contain mx-auto mb-6 dark:brightness-110" />
+        <img src={logoUrl} alt="Cinnabon Logo" className="w-48 h-auto object-contain mx-auto mb-6 dark:brightness-110" />
         
-        <h2 className="text-xl font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none mb-2">Welcome to TabKey 🌀</h2>
-        <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[9px] mb-8">Workforce & Roster Management</p>
+        <h2 className="text-xl font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none mb-2">Welcome Cinnabon Team 🌀</h2>
+        <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[9px] mb-8">Carindale Workforce Management</p>
 
         {error && (
           <div className="mb-6 p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-semibold text-left animate-fade-in">
@@ -109,7 +110,7 @@ export default function LoginPortal({ onLoginSuccess }) {
 
       {/* Footer Branding */}
       <div className="text-center text-slate-400 dark:text-slate-650 font-bold text-[10px] mt-6 z-0 pointer-events-none uppercase tracking-widest">
-        <p>&copy; 2026 Powered by TabKey SaaS Solutions</p>
+        <p>&copy; 2026 TabKey Digital (🚀 A premium digital initiative by Square Connect)</p>
       </div>
     </div>
   );
