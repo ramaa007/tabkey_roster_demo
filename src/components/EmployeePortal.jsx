@@ -133,12 +133,106 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
     }
 
     // 4. Fetch checklists
+    let currentTasks = [];
     try {
       const { data: taskData, error: taskErr } = await supabase.from('tasks').select('*').eq('assigned_to', user.id);
       if (taskErr) console.error("Error fetching tasks:", taskErr);
-      setTasks(taskData || []);
+      currentTasks = taskData || [];
+      setTasks(currentTasks);
     } catch (err) {
       console.error("Tasks fetch caught exception:", err);
+    }
+
+    // --- Dynamic Shift Checklist Template Seeding ---
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayShifts = (shiftData || []).filter(s => s.shift_date === todayStr && s.user_id === user.id);
+      
+      if (todayShifts.length > 0) {
+        let seededAny = false;
+        
+        for (let shift of todayShifts) {
+          // A. Opening Shift (starts before 10:00 AM)
+          const startHour = parseInt(shift.start_time.split(':')[0]);
+          if (startHour < 10) {
+            let opTemplates = [];
+            try {
+              const saved = localStorage.getItem('tabkey_opening_templates');
+              opTemplates = saved ? JSON.parse(saved) : [
+                "Perform opening system health checks 💻",
+                "Prepare client welcome desks and showcase materials 📋",
+                "Verify registers have correct opening cash floats 🪙"
+              ];
+            } catch (e) {
+              opTemplates = [
+                "Perform opening system health checks 💻",
+                "Prepare client welcome desks and showcase materials 📋",
+                "Verify registers have correct opening cash floats 🪙"
+              ];
+            }
+            
+            for (let template of opTemplates) {
+              const displayTitle = `🌅 ${template}`;
+              const alreadyExists = currentTasks.some(t => t.title === displayTitle || t.title === template);
+              if (!alreadyExists) {
+                const newTask = {
+                  id: "t-" + Math.random().toString(36).substr(2, 9),
+                  title: displayTitle,
+                  is_completed: false,
+                  assigned_to: user.id,
+                  created_at: new Date().toISOString()
+                };
+                await supabase.from('tasks').insert(newTask);
+                seededAny = true;
+              }
+            }
+          }
+          
+          // B. Closing Shift (ends at or after 6:00 PM / 18:00)
+          const endHour = parseInt(shift.end_time.split(':')[0]);
+          if (endHour >= 18) {
+            let clTemplates = [];
+            try {
+              const saved = localStorage.getItem('tabkey_closing_templates');
+              clTemplates = saved ? JSON.parse(saved) : [
+                "Ensure all commercial ovens and appliances are powered down 🔌",
+                "Lock key till cash in store safe & arm alarm system 🔒",
+                "Complete daily stock count and secure premises 🚪"
+              ];
+            } catch (e) {
+              clTemplates = [
+                "Ensure all commercial ovens and appliances are powered down 🔌",
+                "Lock key till cash in store safe & arm alarm system 🔒",
+                "Complete daily stock count and secure premises 🚪"
+              ];
+            }
+            
+            for (let template of clTemplates) {
+              const displayTitle = `🔐 ${template}`;
+              const alreadyExists = currentTasks.some(t => t.title === displayTitle || t.title === template);
+              if (!alreadyExists) {
+                const newTask = {
+                  id: "t-" + Math.random().toString(36).substr(2, 9),
+                  title: displayTitle,
+                  is_completed: false,
+                  assigned_to: user.id,
+                  created_at: new Date().toISOString()
+                };
+                await supabase.from('tasks').insert(newTask);
+                seededAny = true;
+              }
+            }
+          }
+        }
+        
+        if (seededAny) {
+          // Re-fetch checklist to display the newly seeded tasks instantly
+          const { data: updatedTaskData } = await supabase.from('tasks').select('*').eq('assigned_to', user.id);
+          setTasks(updatedTaskData || []);
+        }
+      }
+    } catch (e) {
+      console.error("Task seeding caught error:", e);
     }
 
     // 5. Fetch clock logs
@@ -287,7 +381,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
         title: '📍 GPS Geofence Locked',
         text: 'You are currently logged outside the 100m geofence. To request an override clock-in, please provide a justification:',
         input: 'text',
-        inputPlaceholder: 'e.g., Working field-event, Manager Sarah approved override...',
+        inputPlaceholder: 'e.g., Working field-event, Manager approved override...',
         showCancelButton: true,
         confirmButtonText: 'Submit Override Request',
         confirmButtonColor: '#4F46E5',
@@ -327,7 +421,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
     Swal.fire({
       icon: 'success',
       title: 'Clocked In Successfully!',
-      text: 'Have a productive shift. Fresh cinnamon scrolls await! 🌀',
+      text: 'Have a productive and amazing shift! 🚀',
       timer: 2000,
       showConfirmButton: false
     });
@@ -341,9 +435,9 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
       await supabase.from('time_logs').update(updatedFields).eq('id', currentClockLog.id);
       setActiveClockState('break');
       Swal.fire({
-        icon: 'info',
+        icon: 'success',
         title: 'Break Started',
-        text: 'Take a 30 min break. Enjoy a large hot latte! ☕',
+        text: 'Take a well-deserved break! ☕',
         timer: 2000,
         showConfirmButton: false
       });
@@ -354,7 +448,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
       Swal.fire({
         icon: 'success',
         title: 'Break Ended',
-        text: 'Back to the shift. Let\'s bake! 💪',
+        text: 'Back to the shift! Let\'s do this! 💪',
         timer: 2000,
         showConfirmButton: false
       });
@@ -424,7 +518,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
     Swal.fire({
       icon: 'success',
       title: 'Leave Request Filed!',
-      text: 'Sent to manager Sarah Jenkins for review.',
+      text: 'Sent to TabKey Manager for review.',
       confirmButtonColor: '#4F46E5'
     });
 
@@ -519,7 +613,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
         Swal.fire({
           icon: 'success',
           title: 'Claim Submitted!',
-          text: 'Your coverage request has been submitted to Manager Sarah Jenkins for approval. ⚡🎉',
+          text: 'Your coverage request has been submitted to TabKey Manager for approval. ⚡🎉',
           confirmButtonColor: '#10b981'
         });
       } else {
@@ -559,7 +653,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
 
   const getAuthorName = (userId) => {
     const prof = profiles.find(p => p.id === userId);
-    return prof ? prof.full_name : 'Sarah Jenkins (Manager)';
+    return prof ? prof.full_name : 'TabKey Manager';
   };
 
   // Get scheduled co-workers for a shift date
@@ -731,8 +825,8 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
                 {user.full_name.split(' ').map(n=>n[0]).join('')}
               </div>
               <div>
-                <h1 className="text-base font-bold font-display text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight leading-none">{user.full_name}</h1>
-                <p className="text-[9px] text-slate-400 dark:text-slate-500 dark:text-slate-500 dark:text-slate-450 font-bold tracking-widest uppercase mt-1">TabKey Mobile Portal</p>
+                <h1 className="text-base font-bold font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">{user.full_name}</h1>
+                <p className="text-[9px] text-slate-400 dark:text-slate-500 font-bold tracking-widest uppercase mt-1">TabKey Mobile Portal</p>
               </div>
             </div>
             
@@ -778,7 +872,7 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
                 </div>
                 <h2 className="text-2xl font-bold font-display tracking-tight text-white">Compliance Lockout Active</h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 max-w-xs font-semibold leading-relaxed">
-                  TabKey Store policies require mandatory document sign-offs before accessing rosters, tasks, notice boards, or the daily clock terminal.
+                  TabKey Workplace policies require mandatory document sign-offs before accessing rosters, tasks, notice boards, or the daily clock terminal.
                 </p>
               </div>
 
@@ -942,38 +1036,64 @@ export default function EmployeePortal({ user, onLogout, onPortalSwitch }) {
                 )}
 
                 {/* Dynamic Weekly Roster Summary Card */}
-                {employeeProfile && shifts.length > 0 && (
-                  <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-5 shadow-sm space-y-3.5">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                          <Calendar className="w-4.5 h-4.5" />
+                {employeeProfile && shifts.length > 0 && (() => {
+                  const cap = employeeProfile.contracted_hours || 38;
+                  const pct = Math.min((payInfo.totalHours / cap) * 100, 100);
+                  return (
+                    <div className="tabkey-glass-card p-5 shadow-lg space-y-3.5 select-none">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-650 dark:text-indigo-400 flex items-center justify-center">
+                            <Calendar className="w-4.5 h-4.5" />
+                          </div>
+                          <div>
+                            <h3 className="text-xs font-black font-display text-slate-800 dark:text-slate-200 leading-none">Weekly Roster Summary</h3>
+                            <p className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-1">Active Roster Week</p>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 leading-none">Weekly Roster Summary</h3>
-                          <p className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-0.5">Active Roster Week</p>
+                        <span className="text-[8px] text-emerald-600 dark:text-emerald-400 font-extrabold font-display bg-emerald-50 dark:bg-emerald-950/40 px-2.5 py-1 rounded-full border border-emerald-100/35 uppercase tracking-widest flex items-center gap-1">
+                          <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse" />
+                          Active
+                        </span>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-4 py-1">
+                        <div className="text-left">
+                          <p className="text-2xl font-black font-display text-slate-850 dark:text-slate-100 tracking-tight">
+                            {payInfo.totalHours.toFixed(1)} hrs
+                          </p>
+                          <p className="text-[9px] text-slate-400 dark:text-slate-500 font-extrabold uppercase mt-1">
+                            {shifts.length} Shifts Scheduled
+                          </p>
+                        </div>
+                        {/* SVG Roster Ring */}
+                        <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
+                          <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <circle cx="18" cy="18" r="14" className="stroke-slate-100 dark:stroke-white/5 fill-transparent" strokeWidth="3.5" />
+                            <circle 
+                              cx="18" cy="18" r="14" 
+                              className="stroke-indigo-650 dark:stroke-indigo-400 fill-transparent transition-all duration-500"
+                              strokeWidth="3.5"
+                              strokeDasharray={2 * Math.PI * 14}
+                              strokeDashoffset={2 * Math.PI * 14 * (1 - pct / 100)}
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                          <span className="absolute text-[8px] font-black font-display text-slate-800 dark:text-slate-100">
+                            {pct.toFixed(0)}%
+                          </span>
                         </div>
                       </div>
-                      <span className="text-[9px] text-emerald-600 font-bold font-display bg-emerald-50 px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-widest">Active</span>
-                    </div>
 
-                    <div className="flex items-baseline justify-between select-none">
-                      <p className="text-2xl font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight">
-                        {payInfo.totalHours.toFixed(1)} hrs
-                      </p>
-                      <p className="text-[10px] text-slate-500 dark:text-slate-450 font-bold">
-                        {shifts.length} Shifts Scheduled
-                      </p>
+                      {/* Breakdown details */}
+                      <div className="pt-2.5 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[8px] text-slate-400 dark:text-slate-500 font-extrabold font-display uppercase tracking-widest">
+                        <span>Ordinary: {payInfo.ordHours.toFixed(1)}h</span>
+                        {payInfo.satHours > 0 && <span className="text-indigo-600 dark:text-indigo-400 font-extrabold font-display">Saturday: {payInfo.satHours.toFixed(1)}h</span>}
+                        {payInfo.sunHours > 0 && <span className="text-amber-600 dark:text-amber-400 font-extrabold font-display">Sunday: {payInfo.sunHours.toFixed(1)}h</span>}
+                      </div>
                     </div>
-
-                    {/* Breakdown details */}
-                    <div className="pt-2 border-t border-slate-50 flex items-center justify-between text-[9px] text-slate-400 dark:text-slate-500 font-bold font-display uppercase tracking-wider">
-                      <span>Ordinary: {payInfo.ordHours.toFixed(1)}h</span>
-                      {payInfo.satHours > 0 && <span className="text-indigo-600 font-bold font-display">Saturday: {payInfo.satHours.toFixed(1)}h</span>}
-                      {payInfo.sunHours > 0 && <span className="text-amber-600 font-bold font-display">Sunday: {payInfo.sunHours.toFixed(1)}h</span>}
-                    </div>
-                  </div>
-                )}
+                  );
+                })()}
 
                 <h2 className="text-sm font-bold font-display text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1 mb-2">Notice Board Feed</h2>
                 

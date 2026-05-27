@@ -1,5 +1,5 @@
 /**
- * Cinnabon Carindale Roster System - Database Engine & Supabase Bindings
+ * TabKey Roster Portal - Database Engine & Supabase Bindings
  * 
  * Auto-detects if live credentials are provided in the .env file.
  * - If credentials exist: Binds 100% live PostgreSQL tables via @supabase/supabase-js.
@@ -34,7 +34,7 @@ export function getSeedData() {
     profiles: [
       {
         id: "p-manager",
-        full_name: "Sarah Jenkins",
+        full_name: "TabKey Manager",
         email: "manager@tabkey.com.au",
         phone: "",
         dob: "",
@@ -103,7 +103,7 @@ export function getSeedData() {
     ],
     store_handovers: [],
     rewards: [
-      { id: "r-1", title: "Free Cinnamon Scroll & Large Coffee ☕", cost: 100, icon: "Coffee" }
+      { id: "r-1", title: "Premium Workspace Reward & Large Coffee ☕", cost: 100, icon: "Coffee" }
     ],
     reward_claims: []
   };
@@ -480,6 +480,38 @@ export function initializeDB(forceReset = false) {
     const storageKey = STORAGE_KEY_PREFIX + table;
     if (forceReset || localStorage.getItem(storageKey) === null) {
       localStorage.setItem(storageKey, JSON.stringify(seed[table]));
+    } else {
+      // Dynamic LocalStorage Data Cleanups (Sarah Jenkins rename & Xero Payroll IDs)
+      try {
+        const currentData = JSON.parse(localStorage.getItem(storageKey));
+        if (Array.isArray(currentData)) {
+          let updated = false;
+          const cleaned = currentData.map(item => {
+            if (table === 'profiles') {
+              // 1. Rename any manager Sarah Jenkins profiles to generic TabKey Manager
+              if (item.full_name === "Sarah Jenkins" || item.id === "p-manager" || item.role === "manager") {
+                item.full_name = "TabKey Manager";
+                item.email = "manager@tabkey.com.au";
+                item.role = "manager";
+                updated = true;
+              }
+              // 2. Ensure every non-manager profile has a unique Xero Payroll ID if not already set
+              if (item.role !== "manager" && !item.payroll_id) {
+                const uniqueNum = item.kiosk_pin || Math.floor(1000 + Math.random() * 9000).toString();
+                const lastName = item.full_name.split(' ')[1] || 'ST';
+                item.payroll_id = `XERO-${lastName.toUpperCase()}-${uniqueNum}`;
+                updated = true;
+              }
+            }
+            return item;
+          });
+          if (updated) {
+            localStorage.setItem(storageKey, JSON.stringify(cleaned));
+          }
+        }
+      } catch (e) {
+        console.error("Migration error in initializeDB:", e);
+      }
     }
   });
 }

@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   ChevronLeft, ChevronRight, Printer, Copy, Zap, Trash2, 
   Send, DollarSign, AlertTriangle, CheckCircle, Plus, 
-  UserPlus, X, RefreshCw, LogOut, Smartphone, Tablet, Monitor,
+  UserPlus, X, RefreshCw, LogOut, Smartphone, Tablet, Monitor, Megaphone,
   Users, ShieldCheck, Repeat, Settings, Clock, PieChart, 
   Edit, MessageSquare, Coffee, Check, CloudLightning, Activity,
-  Sliders, PlusCircle, LayoutDashboard, Shield, CloudSun, Brain,
+  Sliders, PlusCircle, LayoutDashboard, Shield, CloudSun, Brain, TrendingUp,
   FileText, Camera, Heart, CheckSquare, Award, UserCheck, Eye, Calendar
 } from 'lucide-react';
 import { supabase, resetDemoData } from '../core/mock-db';
@@ -53,8 +53,180 @@ function getWeekDates(offsetWeeks = 0) {
   return dates;
 }
 
+// Premium Weather Mini Icon component with CSS/SVG animations
+function WeatherMiniIcon({ weather }) {
+  if (weather === 'Sunny') {
+    return (
+      <div className="relative w-5 h-5 flex items-center justify-center animate-weather-spin-slow text-amber-500 drop-shadow-sm select-none">
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="5" className="text-amber-500" />
+          {[...Array(8)].map((_, i) => (
+            <line
+              key={i}
+              x1="12"
+              y1="1"
+              x2="12"
+              y2="4"
+              transform={`rotate(${i * 45} 12 12)`}
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              className="text-amber-400"
+            />
+          ))}
+        </svg>
+      </div>
+    );
+  }
+  if (weather === 'Rainy') {
+    return (
+      <div className="relative w-5 h-5 flex items-center justify-center text-blue-500 select-none">
+        <svg className="w-4 h-4 animate-weather-cloud-drift" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M19.36 10.04a6 6 0 0 0-11.32-2.05 4 4 0 0 0-.58 7.89h11.23a4.5 4.5 0 0 0 .67-5.84z" className="text-slate-400 dark:text-slate-500" />
+        </svg>
+        <div className="absolute inset-0 top-2.5 flex justify-center gap-0.5 text-blue-400 font-bold text-[8px] animate-pulse">
+          <span className="animate-bounce" style={{ animationDelay: '0.1s' }}>.</span>
+          <span className="animate-bounce" style={{ animationDelay: '0.3s' }}>.</span>
+        </div>
+      </div>
+    );
+  }
+  if (weather === 'Heatwave') {
+    return (
+      <div className="relative w-5 h-5 flex items-center justify-center text-orange-500 animate-weather-pulse-glow select-none">
+        <span className="text-xs">🔥</span>
+      </div>
+    );
+  }
+  if (weather === 'Cold') {
+    return (
+      <div className="relative w-5 h-5 flex items-center justify-center text-cyan-500 animate-spin select-none" style={{ animationDuration: '8s' }}>
+        <span className="text-xs">❄️</span>
+      </div>
+    );
+  }
+  return <span className="text-xs select-none">🌤️</span>;
+}
+
+// Full-scale interactive Animated Canvas for Roster Weather Forecaster Card
+function WeatherLiveCanvas({ weather }) {
+  if (weather === 'Sunny') {
+    return (
+      <div className="relative h-28 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400/20 via-sky-300/10 to-indigo-500/5 dark:from-amber-500/10 dark:via-sky-950/20 dark:to-[#090a0f] border border-amber-200/30 dark:border-amber-500/10 flex items-center justify-center">
+        <div className="absolute w-36 h-36 border border-dashed border-amber-300/20 dark:border-amber-400/10 rounded-full animate-weather-spin-slow" />
+        <div className="absolute w-24 h-24 border border-dashed border-amber-300/30 dark:border-amber-400/20 rounded-full animate-weather-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '15s' }} />
+        
+        <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-300 to-orange-500 flex items-center justify-center animate-weather-pulse-glow relative shadow-lg shadow-amber-500/25">
+          <span className="text-2xl select-none">☀️</span>
+          <div className="absolute inset-[-6px] rounded-full border border-amber-400/40 animate-ping" style={{ animationDuration: '3s' }} />
+        </div>
+      </div>
+    );
+  }
+  
+  if (weather === 'Rainy') {
+    return (
+      <div className="relative h-28 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-slate-700/25 via-slate-800/10 to-indigo-900/10 dark:from-slate-900/30 dark:via-[#12131a] dark:to-blue-950/20 border border-slate-500/20 dark:border-slate-500/10">
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 animate-weather-cloud-drift select-none">
+          <span className="text-3xl filter drop-shadow-md opacity-85">🌧️</span>
+          <span className="text-2xl opacity-60 filter drop-shadow-sm -ml-2 mb-2">☁️</span>
+        </div>
+        
+        <div className="absolute inset-0 flex justify-around pointer-events-none px-4">
+          {[...Array(12)].map((_, i) => {
+            const delay = (i * 0.15).toFixed(2);
+            const duration = (0.6 + Math.random() * 0.4).toFixed(2);
+            return (
+              <div 
+                key={i} 
+                className="w-[1.5px] bg-gradient-to-b from-blue-400 to-transparent rounded-full opacity-65"
+                style={{
+                  height: '18px',
+                  animation: `weather-rain-fall ${duration}s infinite linear`,
+                  animationDelay: `${delay}s`,
+                  transform: 'translate3d(0, -20px, 0)',
+                  willChange: 'transform'
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+  
+  if (weather === 'Heatwave') {
+    return (
+      <div className="relative h-28 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-orange-600/15 via-rose-500/10 to-amber-500/5 dark:from-orange-700/10 dark:via-red-950/20 dark:to-[#090a0f] border border-orange-500/20 dark:border-orange-500/10 flex items-center justify-center">
+        <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-red-600/10 to-amber-500/20 absolute blur-xl animate-pulse" />
+        
+        <div className="absolute bottom-2 flex justify-around w-full pointer-events-none px-4">
+          {[...Array(10)].map((_, i) => {
+            const delay = (i * 0.2).toFixed(2);
+            const duration = (1.5 + Math.random() * 0.8).toFixed(2);
+            return (
+              <div 
+                key={i}
+                className="w-1 h-14 bg-gradient-to-t from-red-500/35 via-orange-400/20 to-transparent rounded-full"
+                style={{
+                  animation: `weather-heat-rise ${duration}s infinite ease-in-out`,
+                  animationDelay: `${delay}s`,
+                  transform: 'translate3d(0, 110px, 0)',
+                  willChange: 'transform'
+                }}
+              />
+            );
+          })}
+        </div>
+        
+        <div className="z-10 flex flex-col items-center select-none">
+          <span className="text-3xl animate-bounce" style={{ animationDuration: '3s' }}>🔥</span>
+          <span className="text-[8px] font-extrabold font-display uppercase tracking-widest text-orange-600/80 dark:text-orange-400 mt-1">Extreme Thermal Load</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (weather === 'Cold') {
+    return (
+      <div className="relative h-28 w-full overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-400/15 via-blue-500/10 to-indigo-900/15 dark:from-cyan-900/10 dark:via-[#12131a] dark:to-indigo-950/20 border border-cyan-300/30 dark:border-cyan-500/10 flex items-center justify-center">
+        <div className="absolute w-20 h-20 border border-dashed border-cyan-400/15 rounded-full animate-spin" style={{ animationDuration: '25s' }} />
+        
+        <div className="absolute inset-0 flex justify-around pointer-events-none px-4">
+          {[...Array(10)].map((_, i) => {
+            const delay = (i * 0.35).toFixed(2);
+            const duration = (2.2 + Math.random() * 1.2).toFixed(2);
+            return (
+              <div 
+                key={i}
+                className="text-cyan-400/70 select-none font-bold text-xs"
+                style={{
+                  animation: `weather-snow-drift ${duration}s infinite linear`,
+                  animationDelay: `${delay}s`,
+                  transform: 'translate3d(0, -20px, 0)',
+                  willChange: 'transform'
+                }}
+              >
+                ❄️
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="z-10 flex flex-col items-center select-none">
+          <span className="text-3xl animate-spin text-cyan-400" style={{ animationDuration: '10s' }}>❄️</span>
+          <span className="text-[8px] font-extrabold font-display uppercase tracking-widest text-cyan-500/80 dark:text-cyan-400 mt-1">Freezing Winter Rhythms</span>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
 export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   const [managerTab, setManagerTab] = useState('dashboard'); // dashboard, roster, time, swaps, leave, docs, staff, reports, payroll, settings
+
   const [showMobileSidebar, setShowMobileSidebar] = useState(false);
   const [managerViewMode, setManagerViewMode] = useState('desktop'); // desktop, mobile
 
@@ -141,7 +313,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
     type: 'casual',
     hourly_rate: 29.23,
     contracted_hours: 15,
-    color: '#4F46E5'
+    color: '#4F46E5',
+    payroll_id: ''
   });
   const [editingEmployee, setEditingEmployee] = useState(null);
 
@@ -168,6 +341,55 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   const [taskAssignee, setTaskAssignee] = useState('');
   const [taskShiftId, setTaskShiftId] = useState('');
   const [taskAssignType, setTaskAssignType] = useState('person'); // person, shift
+
+  // Unified Task Center Template States
+  const [taskTab, setTaskTab] = useState('dispatch'); // 'dispatch', 'opening', 'closing'
+  const [openingTemplates, setOpeningTemplates] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tabkey_opening_templates');
+      return saved ? JSON.parse(saved) : [
+        "Perform opening system health checks 💻",
+        "Prepare client welcome desks and showcase materials 📋",
+        "Verify registers have correct opening cash floats 🪙"
+      ];
+    } catch (e) {
+      return [
+        "Perform opening system health checks 💻",
+        "Prepare client welcome desks and showcase materials 📋",
+        "Verify registers have correct opening cash floats 🪙"
+      ];
+    }
+  });
+  const [closingTemplates, setClosingTemplates] = useState(() => {
+    try {
+      const saved = localStorage.getItem('tabkey_closing_templates');
+      return saved ? JSON.parse(saved) : [
+        "Ensure all commercial ovens and appliances are powered down 🔌",
+        "Lock key till cash in store safe & arm alarm system 🔒",
+        "Complete daily stock count and secure premises 🚪"
+      ];
+    } catch (e) {
+      return [
+        "Ensure all commercial ovens and appliances are powered down 🔌",
+        "Lock key till cash in store safe & arm alarm system 🔒",
+        "Complete daily stock count and secure premises 🚪"
+      ];
+    }
+  });
+  const [newTemplateItem, setNewTemplateItem] = useState('');
+  
+  // Announcement / Notice Feed States
+  const [feed, setFeed] = useState([]);
+  const [newFeedTitle, setNewFeedTitle] = useState('');
+  const [newFeedContent, setNewFeedContent] = useState('');
+
+  useEffect(() => {
+    localStorage.setItem('tabkey_opening_templates', JSON.stringify(openingTemplates));
+  }, [openingTemplates]);
+
+  useEffect(() => {
+    localStorage.setItem('tabkey_closing_templates', JSON.stringify(closingTemplates));
+  }, [closingTemplates]);
   
   // Presentation switch overlays
   const [loadingOverlay, setLoadingOverlay] = useState(false);
@@ -303,6 +525,14 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       setTasks(taskData || []);
     } catch (err) {
       console.error("Tasks fetch caught exception:", err);
+    }
+
+    try {
+      const { data: feedData, error: feedErr } = await supabase.from('feed').select('*').order('created_at', { ascending: false });
+      if (feedErr) console.error("Error fetching feed:", feedErr);
+      setFeed(feedData || []);
+    } catch (err) {
+      console.error("Feed fetch caught exception:", err);
     }
 
     try {
@@ -447,7 +677,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   // Recent Activity Logs (last 6 clocks/approvals)
   const recentActivities = [
     { type: 'clock_in', text: 'Alex Mercer clocked in at 06:58 AM', time: 'Today', icon: 'Clock', color: 'text-indigo-600 bg-indigo-50' },
-    { type: 'approval', text: 'Sarah Jenkins approved Alex\'s Sick Leave', time: 'Yesterday', icon: 'UserCheck', color: 'text-emerald-600 bg-emerald-50' },
+    { type: 'approval', text: 'TabKey Manager approved Alex\'s Sick Leave', time: 'Yesterday', icon: 'UserCheck', color: 'text-emerald-600 bg-emerald-50' },
     { type: 'clock_out', text: 'Charlie Puth clocked out at 10:04 PM', time: 'Yesterday', icon: 'Clock', color: 'text-rose-600 bg-rose-50' },
     { type: 'swap', text: 'Shift swap requested by Charlie Puth', time: '2 days ago', icon: 'Repeat', color: 'text-amber-600 bg-amber-50' },
     { type: 'doc', text: 'Mandatory Policy "Fast Food Award" published', time: '3 days ago', icon: 'FileText', color: 'text-purple-600 bg-purple-50' },
@@ -501,7 +731,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       
       fetchData();
       setLoadingOverlay(false);
-      alert("Cinnabon Carindale AI Co-Pilot filled 28 unassigned award-compliant drafts! Click 'Publish Roster' to launch.");
+      alert("TabKey AI Co-Pilot filled 28 unassigned award-compliant drafts! Click 'Publish Roster' to launch.");
     }, 1000);
   };
 
@@ -761,8 +991,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         return hr < 10;
       });
       taskTitles = [
-        "Pre-heat flour mixes & ovens to 180°C 🌀",
-        "Stock warm cinnamon scrolls in display showcase 🥐"
+        "Perform opening system health checks 💻",
+        "Prepare client welcome desks and showcase materials 📋"
       ];
     } else if (presetType === 'midday') {
       presetName = "Mid-day Coffee & Counter Clean";
@@ -818,6 +1048,89 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
     });
   };
 
+  const handleCreateAnnouncement = async (e) => {
+    e.preventDefault();
+    if (!newFeedTitle.trim() || !newFeedContent.trim()) {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Missing Info',
+        text: 'Please write both a title and content for your announcement!',
+        confirmButtonColor: '#4F46E5'
+      });
+      return;
+    }
+
+    const announcement = {
+      id: "f-" + Math.random().toString(36).substr(2, 9),
+      author_id: "p-manager",
+      title: newFeedTitle,
+      content: newFeedContent,
+      likes: 0,
+      comments: [],
+      created_at: new Date().toISOString()
+    };
+
+    await supabase.from('feed').insert(announcement);
+    setNewFeedTitle('');
+    setNewFeedContent('');
+    fetchData();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Announcement Broadcasted! 📢',
+      text: 'Your notification is now live on everyone\'s mobile homepage.',
+      confirmButtonColor: '#4F46E5'
+    });
+  };
+
+  const handleAddTemplateItem = (type) => {
+    if (!newTemplateItem.trim()) return;
+    if (type === 'opening') {
+      setOpeningTemplates(prev => {
+        const next = [...prev, newTemplateItem.trim()];
+        localStorage.setItem('tabkey_opening_templates', JSON.stringify(next));
+        return next;
+      });
+    } else {
+      setClosingTemplates(prev => {
+        const next = [...prev, newTemplateItem.trim()];
+        localStorage.setItem('tabkey_closing_templates', JSON.stringify(next));
+        return next;
+      });
+    }
+    setNewTemplateItem('');
+    Swal.fire({
+      icon: 'success',
+      title: 'Template Updated! ⚡',
+      text: 'New automated shift template task added successfully.',
+      timer: 1500,
+      showConfirmButton: false
+    });
+  };
+
+  const handleRemoveTemplateItem = (type, index) => {
+    if (type === 'opening') {
+      setOpeningTemplates(prev => {
+        const next = prev.filter((_, idx) => idx !== index);
+        localStorage.setItem('tabkey_opening_templates', JSON.stringify(next));
+        return next;
+      });
+    } else {
+      setClosingTemplates(prev => {
+        const next = prev.filter((_, idx) => idx !== index);
+        localStorage.setItem('tabkey_closing_templates', JSON.stringify(next));
+        return next;
+      });
+    }
+    Swal.fire({
+      icon: 'success',
+      title: 'Item Removed',
+      text: 'Shift template task deleted.',
+      timer: 1500,
+      showConfirmButton: false
+    });
+  };
+
   const triggerDownloadCsvReport = () => {
     const rows = [
       ["Document Title", "Employee Name", "Role Type", "Signature Status", "Date Signed"],
@@ -846,8 +1159,11 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   };
 
   const exportPayrollCSV = async () => {
-    const startDateStr = document.getElementById('payroll-start').value;
-    const endDateStr = document.getElementById('payroll-end').value;
+    const startEl = document.getElementById('payroll-start');
+    const endEl = document.getElementById('payroll-end');
+    const startDateStr = startEl ? startEl.value : weekDates[0];
+    const endDateStr = endEl ? endEl.value : weekDates[6];
+
     if (!startDateStr || !endDateStr) {
       Swal.fire({
         icon: 'warning',
@@ -889,6 +1205,35 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         confirmButtonColor: '#ea580c'
       });
     }
+  };
+
+  const handleSyncXero = async () => {
+    const weekLogs = timeLogs.filter(log => {
+      if (!log || !log.clock_in) return false;
+      const logDateStr = log.clock_in.split('T')[0];
+      return weekDates.includes(logDateStr);
+    });
+    const pendingLogs = weekLogs.filter(l => !l.is_approved);
+
+    if (pendingLogs.length > 0) {
+      const result = await Swal.fire({
+        title: '⚠️ Pending Timesheets Exist',
+        text: `You have ${pendingLogs.length} unapproved timesheet entries this week. Only fully approved timesheet hours will be sent to Xero Payroll. Unapproved entries will be skipped.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Override & Sync Approved Only',
+        cancelButtonText: 'Check Timesheets Again',
+        confirmButtonColor: '#4F46E5',
+        cancelButtonColor: '#64748b'
+      });
+      
+      if (!result.isConfirmed) {
+        setManagerTab('time'); // switch back to timesheets tab!
+        return;
+      }
+    }
+    
+    await exportPayrollCSV();
   };
 
   const testXeroConnection = async () => {
@@ -1072,6 +1417,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       level: 1,
       points: 0,
       streak: 0,
+      payroll_id: newEmployee.payroll_id || `XERO-${randomPin}`,
       created_at: new Date().toISOString()
     };
 
@@ -1099,7 +1445,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
       hourly_rate: parseFloat(editingEmployee.hourly_rate || 29.23),
       contracted_hours: parseFloat(editingEmployee.contracted_hours || 0),
       kiosk_pin: editingEmployee.kiosk_pin || '',
-      temp_password: editingEmployee.temp_password || ''
+      temp_password: editingEmployee.temp_password || '',
+      payroll_id: editingEmployee.payroll_id || ''
     }).eq('id', editingEmployee.id);
 
     setShowEditEmployeeModal(false);
@@ -1247,18 +1594,23 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* Weather Forecaster Card */}
         <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-4 rounded-xl shadow-sm text-left">
           <div className="flex justify-between items-center mb-3">
-            <div>
-              <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider leading-none">Operational Weather</p>
-              <h4 className="font-bold font-display text-xs text-slate-800 dark:text-slate-200 mt-1 flex items-center gap-1.5 leading-none">
-                🌦️ weather simulated: <strong className="text-indigo-600">{weatherMock}</strong>
-              </h4>
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[8px] text-slate-400 dark:text-slate-500 font-extrabold uppercase tracking-widest leading-none">
+                {new Date().toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}
+              </span>
+              <div className="flex items-center gap-1.5 mt-0.5 select-none">
+                <WeatherMiniIcon weather={weatherMock} />
+                <h4 className="font-bold font-display text-xs text-slate-805 dark:text-slate-200 mt-0.5 leading-none">
+                  Simulated: <strong className="text-indigo-600 dark:text-indigo-400 font-black">{weatherMock}</strong>
+                </h4>
+              </div>
             </div>
             <div className="flex bg-[#f8fafc] dark:bg-[#090a0f] p-1 border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[8px] font-bold font-display">
               {["Sunny", "Rainy", "Heatwave", "Cold"].map(w => (
                 <button 
                   key={w}
                   onClick={() => setWeatherMock(w)}
-                  className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${weatherMock === w ? 'bg-indigo-600 text-white shadow-sm' : 'bg-transparent text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:text-slate-500'}`}
+                  className={`px-2 py-0.5 rounded-lg transition-all cursor-pointer ${weatherMock === w ? 'bg-indigo-600 text-white shadow-sm' : 'bg-transparent text-slate-400 dark:text-slate-500 hover:text-slate-650'}`}
                 >
                   {w[0]}
                 </button>
@@ -1270,12 +1622,17 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             <div className="flex justify-between items-center text-[10px] font-bold text-slate-600 dark:text-slate-400 dark:text-slate-500">
               <div>
                 <p className="text-[8px] text-slate-400 dark:text-slate-500 uppercase">Forecast Multiplier</p>
-                <p className="text-sm font-bold font-display text-slate-850">{(salesMultiplier * 100).toFixed(0)}%</p>
+                <p className="text-sm font-bold font-display text-slate-850 dark:text-slate-205">{(salesMultiplier * 100).toFixed(0)}%</p>
               </div>
               <div className="text-right">
                 <p className="text-[8px] text-slate-400 dark:text-slate-500 uppercase">Revenue Target</p>
-                <p className="text-sm font-bold font-display text-indigo-600">${totalWeeklySalesForecast.toFixed(0)}</p>
+                <p className="text-sm font-bold font-display text-indigo-600 dark:text-indigo-400">${totalWeeklySalesForecast.toFixed(0)}</p>
               </div>
+            </div>
+
+            {/* Immersive Animated Live Weather Canvas */}
+            <div>
+              <WeatherLiveCanvas weather={weatherMock} />
             </div>
             
             <div className="p-2.5 rounded-xl bg-indigo-50/50 border border-indigo-100 text-[10px] font-bold text-indigo-850 leading-normal flex gap-2">
@@ -1771,8 +2128,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       Audit PDF Log
                     </button>
                     <button 
-                      onClick={() => { setEditingPolicy(doc); setPolicyEditTitle(doc.title); setPolicyEditContent(doc.content); setShowPolicyEditModal(true); }}
-                      className="p-2 bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-indigo-50 border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-slate-400 dark:text-slate-500 hover:text-indigo-605 transition-all cursor-pointer"
+                      onClick={() => { setEditingDoc({ ...doc }); setShowEditDocModal(true); }}
+                      className="p-2 bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-indigo-50 border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-slate-400 dark:text-slate-500 hover:text-indigo-600 transition-all cursor-pointer"
                     >
                       <Edit className="w-3.5 h-3.5" />
                     </button>
@@ -1961,7 +2318,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
           <div className="flex items-center gap-2.5 select-none">
             <div className="w-8 h-8 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold font-display text-xs shadow-inner shadow-indigo-700/50">TK</div>
             <div>
-              <h1 className="text-sm font-bold font-display text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight leading-none">Cinnabon Carindale Manager</h1>
+              <h1 className="text-sm font-bold font-display text-slate-900 dark:text-slate-100 dark:text-slate-100 tracking-tight leading-none">TabKey Store Manager</h1>
               <p className="text-[8px] text-slate-400 dark:text-slate-500 dark:text-slate-500 dark:text-slate-450 font-semibold tracking-widest uppercase mt-0.5">Mobile Console</p>
             </div>
           </div>
@@ -2151,7 +2508,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
           <aside className="w-full md:w-64 bg-white dark:bg-[#12131a] border-b md:border-b-0 md:border-r border-[#e2e8f0] dark:border-[#1f212e] flex flex-col shrink-0">
             <div className="p-6 border-b border-[#e2e8f0] dark:border-[#1f212e] flex items-center justify-between shrink-0">
               <div className="flex flex-col">
-                <h1 className="text-base font-bold font-display text-indigo-600 leading-none">Cinnabon Carindale</h1>
+                <h1 className="text-base font-bold font-display text-indigo-600 leading-none">TabKey Workforce</h1>
                 <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">Roster Solution</p>
               </div>
               <div className="flex items-center gap-1.5 md:hidden">
@@ -2172,7 +2529,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </div>
             </div>
 
-            <div className={`${showMobileSidebar ? 'block' : 'hidden md:block'} flex-grow flex flex-col overflow-y-auto`}>
+            <div className={`${showMobileSidebar ? 'block' : 'hidden md:block'} flex-grow flex flex-col overflow-y-auto tabkey-smooth-scroll`}>
 
             {/* Premium Desktop/Mobile View Switcher in sidebar */}
             <div className="p-4 border-b border-[#e2e8f0] dark:border-[#1f212e] shrink-0">
@@ -2196,7 +2553,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </div>
             </div>
         
-        <nav className="flex-grow p-4 space-y-1 font-bold text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 overflow-y-auto select-none">
+        <nav className="flex-grow p-4 space-y-1 font-bold text-xs uppercase tracking-wider text-slate-400 dark:text-slate-500 overflow-y-auto tabkey-smooth-scroll select-none">
           <span className="px-3 py-1.5 block text-[10px] text-slate-300 font-bold font-display">Controls</span>
           
           <button 
@@ -2337,24 +2694,14 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               <span>Store Settings</span>
             </div>
           </button>
-
-          <div className="pt-4 border-t border-[#e2e8f0] dark:border-[#1f212e] mt-4">
-            <button 
-              onClick={handleResetDemo}
-              className="w-full text-left px-4 py-3 hover:bg-rose-50 dark:hover:bg-rose-950/20 text-rose-550 rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
-            >
-              <Trash2 className="w-4 h-4" />
-              <span>Reset Data</span>
-            </button>
-          </div>
         </nav>
         
         {/* User Info footer */}
         <div className="p-4 border-t border-[#e2e8f0] dark:border-[#1f212e] shrink-0 flex items-center justify-between font-semibold text-xs select-none transition-colors">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-indigo-650 flex items-center justify-center text-white text-[10px] uppercase font-bold">SJ</div>
+            <div className="w-8 h-8 rounded-full bg-indigo-650 flex items-center justify-center text-white text-[10px] uppercase font-bold">TM</div>
             <div>
-              <p className="text-slate-800 dark:text-slate-200 dark:text-slate-200 leading-none">Sarah Jenkins</p>
+              <p className="text-slate-800 dark:text-slate-200 dark:text-slate-200 leading-none">TabKey Manager</p>
               <p className="text-[10px] text-slate-400 dark:text-slate-500 dark:text-slate-500 dark:text-slate-450 mt-0.5 uppercase tracking-wider font-semibold">Manager</p>
             </div>
           </div>
@@ -2381,219 +2728,405 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
     </aside>
 
       {/* Main Administrative Portal Viewport */}
-      <main className="flex-grow p-4 md:p-8 overflow-y-auto h-full min-w-0">
+      <main className="flex-grow pt-4 pb-8 px-4 md:pt-4 md:pb-8 md:px-8 overflow-y-auto h-full min-w-0">
         
         {/* 1. DASHBOARD HOME TAB (INNOVATIVE WIDGETRY) */}
         {managerTab === 'dashboard' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex justify-between items-center">
+            {/* Beautiful Large Typographic Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-white/5">
               <div>
-                <h2 className="text-2xl font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Dashboard Home</h2>
-                <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Live operational cockpit & next-gen forecast widgets</p>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[9px] font-extrabold uppercase tracking-widest text-indigo-650 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400 mb-2.5 border border-indigo-150/40 select-none">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 pulse-glow-emerald" />
+                  Live Intelligence Cockpit
+                </span>
+                <h2 className="text-4xl font-black font-display tracking-tight text-slate-850 dark:text-slate-100 leading-none">
+                  Operational <span className="bg-gradient-to-r from-indigo-500 to-violet-600 bg-clip-text text-transparent">Overview</span>
+                </h2>
+                <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-2 uppercase tracking-wider">Next-Gen Labor Analytics & Roster Forecast Dashboard</p>
               </div>
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] px-4 py-2 rounded-xl flex items-center gap-2 text-xs font-bold font-display text-slate-700 dark:text-slate-300 shadow-sm select-none">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span>🌧️ weather simulated: <strong className="text-indigo-600">{weatherMock}</strong></span>
+              <div className="flex flex-wrap items-center gap-3 select-none">
+                {/* Live Date Pill (Enlarged) */}
+                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-indigo-100 dark:border-indigo-500/20 px-5 py-3 rounded-2xl flex items-center gap-3.5 shadow-md hover:scale-[1.02] transition-all">
+                  <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+                  <div className="text-left">
+                    <p className="text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-widest leading-none">CURRENT DATE</p>
+                    <p className="text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-1 leading-none">
+                      {new Date().toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    </p>
+                  </div>
+                </div>
+                
+                {/* Weather Pill with Micro-Animated Icon (Enlarged) */}
+                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-blue-100 dark:border-blue-500/20 px-5 py-3 rounded-2xl flex items-center gap-3.5 shadow-md hover:scale-[1.02] transition-all">
+                  <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                    <WeatherMiniIcon weather={weatherMock} />
+                  </div>
+                  <div className="text-left">
+                    <p className="text-[9px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest leading-none">FORECAST INTEL</p>
+                    <p className="text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-1 leading-none">
+                      {weatherMock} Weather
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            {/* A. Live Metrics Card Deck */}
+            {/* A. Live Metrics Premium Glass Card Deck */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl overflow-hidden shadow-sm flex flex-col justify-between">
-                <div className="bg-indigo-50/50 px-5 py-3 border-b border-indigo-100/50 text-left">
-                  <p className="text-xs font-bold font-display uppercase tracking-wider text-indigo-750">Active Team Count</p>
+              {/* Card 1: Active Team */}
+              <div className="tabkey-glass-card overflow-hidden flex flex-col justify-between p-4 px-4.5 relative select-none transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs font-extrabold font-display uppercase tracking-wider text-slate-500 dark:text-slate-450 leading-none">Active Team Count</p>
+                  <span className="w-2 h-2 rounded-full bg-indigo-500 pulse-glow-indigo" />
                 </div>
-                <div className="p-5 text-left">
-                  <h3 className="text-3xl font-bold font-display text-slate-850">{profiles.filter(p => p.role !== 'manager').length} staff</h3>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Excludes administrators</p>
+                <div className="flex items-center justify-between gap-3 mt-1.5">
+                  <div className="text-left">
+                    <h3 className="text-2xl font-black font-display text-slate-850 dark:text-slate-100 leading-none">{profiles.filter(p => p.role !== 'manager').length}</h3>
+                    <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold mt-1 uppercase tracking-wider leading-none">Registered Staff</p>
+                  </div>
+                  {/* SVG mini-avatar-group aesthetic */}
+                  <svg className="w-8 h-8 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                  </svg>
                 </div>
               </div>
               
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl overflow-hidden shadow-sm flex flex-col justify-between">
-                <div className="bg-indigo-50/50 px-5 py-3 border-b border-indigo-100/50 text-left">
-                  <p className="text-xs font-bold font-display uppercase tracking-wider text-indigo-750">Weekly Shifts Count</p>
+              {/* Card 2: Weekly Shifts */}
+              <div className="tabkey-glass-card overflow-hidden flex flex-col justify-between p-4 px-4.5 relative select-none transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs font-extrabold font-display uppercase tracking-wider text-slate-500 dark:text-slate-450 leading-none">Weekly Shifts Count</p>
+                  <span className="px-1.5 py-0.5 rounded text-[7px] font-extrabold uppercase bg-amber-50 text-amber-600 border border-amber-100 leading-none">Active</span>
                 </div>
-                <div className="p-5 text-left">
-                  <h3 className="text-3xl font-bold font-display text-slate-850">{weekShifts.filter(s => s.user_id !== 'open').length} shifts</h3>
-                  <p className="text-[10px] text-indigo-650 font-bold font-display mt-1">
-                    {weekShifts.filter(s => s.status === 'draft' && s.user_id !== 'open').length} drafts pending
-                  </p>
+                <div className="flex items-center justify-between gap-3 mt-1.5">
+                  <div className="text-left">
+                    <h3 className="text-2xl font-black font-display text-slate-850 dark:text-slate-100 leading-none">{weekShifts.filter(s => s.user_id !== 'open').length}</h3>
+                    <p className="text-[8px] text-indigo-600 dark:text-indigo-400 font-black mt-1 uppercase tracking-wider leading-none">
+                      {weekShifts.filter(s => s.status === 'draft' && s.user_id !== 'open').length} drafts pending
+                    </p>
+                  </div>
+                  <svg className="w-8 h-8 text-indigo-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
                 </div>
               </div>
-
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl overflow-hidden shadow-sm flex flex-col justify-between">
-                <div className="bg-indigo-50/50 px-5 py-3 border-b border-indigo-100/50 text-left">
-                  <p className="text-xs font-bold font-display uppercase tracking-wider text-indigo-750">Active Clock-Ins</p>
+ 
+              {/* Card 3: Active Clock-Ins */}
+              <div className="tabkey-glass-card overflow-hidden flex flex-col justify-between p-4 px-4.5 relative select-none transition-all duration-300 hover:shadow-md">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-xs font-extrabold font-display uppercase tracking-wider text-slate-500 dark:text-slate-450 leading-none">Active Clock-Ins</p>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 pulse-glow-emerald" />
                 </div>
-                <div className="p-5 text-left">
-                  <h3 className="text-3xl font-bold font-display text-emerald-600">{activeClockIns.length} online</h3>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Currently working on shifts</p>
+                <div className="flex items-center justify-between gap-3 mt-1.5">
+                  <div className="text-left">
+                    <h3 className="text-2xl font-black font-display text-emerald-600 leading-none">{activeClockIns.length}</h3>
+                    <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold mt-1 uppercase tracking-wider leading-none">Currently Working</p>
+                  </div>
+                  <svg className="w-8 h-8 text-emerald-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
                 </div>
               </div>
-
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl overflow-hidden shadow-sm flex flex-col justify-between">
-                <div className="bg-indigo-50/50 px-5 py-3 border-b border-indigo-100/50 text-left">
-                  <p className="text-xs font-bold font-display uppercase tracking-wider text-indigo-750">Weekly Labor Budget</p>
-                </div>
-                <div className="p-5 text-left">
-                  <div className="flex justify-between items-baseline">
-                    <h3 className="text-xl font-bold font-display text-slate-850">${totalLaborSpend.toFixed(0)}</h3>
-                    <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold font-display">/ ${budgetTarget}</span>
+ 
+              {/* Card 4: Labor Budget */}
+              <div className="tabkey-glass-card overflow-hidden flex flex-col justify-between p-4 px-4.5 relative select-none transition-all duration-300 hover:shadow-md">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-left">
+                    <p className="text-xs font-extrabold font-display uppercase tracking-wider text-slate-500 dark:text-slate-450 leading-none">Weekly Budget spend</p>
+                    <h3 className="text-2xl font-black font-display text-slate-850 dark:text-slate-100 mt-1.5 leading-none">${totalLaborSpend.toFixed(0)}</h3>
+                    <p className="text-[7.5px] font-bold text-slate-400 dark:text-slate-500 mt-1 uppercase tracking-wider leading-none">Limit: ${budgetTarget}</p>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-[#090a0f] h-2 rounded-full mt-2 overflow-hidden flex">
-                    <div 
-                      style={{ width: `${Math.min((totalLaborSpend / budgetTarget) * 100, 100)}%` }}
-                      className={`h-full ${totalLaborSpend > budgetTarget ? 'bg-rose-500' : 'bg-indigo-650'}`}
-                    />
+                  {/* High-fidelity SVG Circular Gauge Chart (Compact!) */}
+                  <div className="relative w-13 h-13 shrink-0 flex items-center justify-center">
+                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                      <circle cx="18" cy="18" r="14" className="stroke-slate-100 dark:stroke-white/5 fill-transparent" strokeWidth="3.5" />
+                      <circle 
+                        cx="18" cy="18" r="14" 
+                        className={`fill-transparent transition-all duration-500 ${totalLaborSpend > budgetTarget ? 'stroke-rose-500' : 'stroke-indigo-650 dark:stroke-indigo-400'}`}
+                        strokeWidth="3.5"
+                        strokeDasharray={2 * Math.PI * 14}
+                        strokeDashoffset={2 * Math.PI * 14 * (1 - Math.min(totalLaborSpend / budgetTarget, 1))}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    <span className={`absolute text-[8px] font-black font-display ${totalLaborSpend > budgetTarget ? 'text-rose-500' : 'text-slate-800 dark:text-slate-100'}`}>
+                      {(totalLaborSpend / budgetTarget * 100).toFixed(0)}%
+                    </span>
                   </div>
-                  <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 mt-1.5">{(totalLaborSpend / budgetTarget * 100).toFixed(0)}% budget consumed</p>
                 </div>
               </div>
             </div>
 
-             {/* B. Innovative Row 1: Weather Forecaster & Profitability LCTS Speedo Dial */}
+            {/* Announcement Broadcaster Card */}
+            <div className="tabkey-glass-card tabkey-shine-orange p-5 shadow-lg select-none text-left">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Left side: Create Announcement Form */}
+                <div className="lg:col-span-5 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 bg-orange-50 dark:bg-orange-950/40 rounded-xl text-orange-600 dark:text-orange-400">
+                      <Megaphone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="font-bold font-display text-base text-slate-805 dark:text-slate-100 leading-none">📢 Announcement Broadcaster</h4>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Publish notices live to everyone's mobile homepage on login</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleCreateAnnouncement} className="space-y-3.5 text-xs">
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">Announcement Title</label>
+                      <input 
+                        type="text"
+                        placeholder="e.g. Long Weekend Opening Hours 📅"
+                        required
+                        value={newFeedTitle}
+                        onChange={(e) => setNewFeedTitle(e.target.value)}
+                        className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 focus:outline-none focus:border-indigo-500"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">Content / Message</label>
+                      <textarea 
+                        placeholder="Write your broadcast message here..."
+                        required
+                        rows={3}
+                        value={newFeedContent}
+                        onChange={(e) => setNewFeedContent(e.target.value)}
+                        className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 focus:outline-none focus:border-indigo-500 resize-none"
+                      />
+                    </div>
+
+                    <button 
+                      type="submit"
+                      className="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/10 active:scale-95 cursor-pointer"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Broadcast to Notice Board 🚀</span>
+                    </button>
+                  </form>
+                </div>
+
+                {/* Right side: Live Notice Feed Preview */}
+                <div className="lg:col-span-7 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-white/5 pt-4 lg:pt-0 lg:pl-6">
+                  <div>
+                    <div className="flex items-center justify-between mb-3.5">
+                      <p className="text-[10px] font-bold font-display uppercase tracking-widest text-slate-400 dark:text-slate-500 ml-1">📢 Active Broadcasts Feed</p>
+                      <span className="px-2 py-0.5 rounded-full text-[8px] font-extrabold uppercase bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-100/10 animate-pulse">LIVE CONNECTED</span>
+                    </div>
+                    
+                    <div className="space-y-3 max-h-[220px] overflow-y-auto premium-scrollbar pr-1">
+                      {feed.length === 0 ? (
+                        <div className="text-center py-6 text-slate-400 dark:text-slate-500 text-xs font-medium">
+                          No active broadcasts found on the notice board.
+                        </div>
+                      ) : (
+                        feed.slice(0, 3).map(post => (
+                          <div key={post.id} className="bg-slate-50/50 dark:bg-white/5 p-3 rounded-xl border border-slate-100 dark:border-white/5 space-y-1.5 text-xs text-left relative hover:scale-[0.99] transition-all">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-slate-805 dark:text-slate-200 text-xs">{post.title}</span>
+                              <span className="text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider select-none">
+                                {new Date(post.created_at).toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}
+                              </span>
+                            </div>
+                            <p className="text-slate-655 dark:text-slate-400 leading-normal line-clamp-2">{post.content}</p>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-3.5 p-2 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[8.5px] text-slate-400 dark:text-slate-500 font-bold leading-normal">
+                    💡 Broadcasts appear immediately at login and on the notice board homepage of all scheduled and causal staff.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+             {/* B. Innovative Row 1: Weather Forecaster & One-Touch Task Dispatcher */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* Innovation 1: Weather demand forecaster */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl shadow-sm flex flex-col justify-between overflow-hidden text-left">
+              <div className="tabkey-glass-card tabkey-shine-blue flex flex-col justify-between overflow-hidden text-left shadow-lg">
                 <div>
                   {/* Header Box with Light Background */}
-                  <div className="bg-indigo-50/60 p-5 border-b border-indigo-100/60 flex justify-between items-center select-none">
+                  <div className="bg-indigo-50/20 dark:bg-white/5 p-3.5 border-b border-indigo-100/30 dark:border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 select-none">
                     <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-indigo-100 rounded-xl text-indigo-750">
+                      <div className="p-2.5 bg-indigo-100 dark:bg-indigo-950/40 rounded-xl text-indigo-750 dark:text-indigo-400">
                         <CloudSun className="w-5 h-5" />
                       </div>
                       <div>
-                        <h4 className="font-bold font-display text-base text-indigo-950 leading-none">🌦️ Roster Weather Forecaster</h4>
-                        <p className="text-[10px] text-indigo-650 font-bold font-display mt-1">Sales predictions based on meteorological loads</p>
+                        <h4 className="font-bold font-display text-base text-indigo-950 dark:text-slate-100 leading-none">🌦️ Roster Weather Forecaster</h4>
+                        <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold font-display mt-1">Real-time meteorological demand models</p>
                       </div>
                     </div>
-                    <div className="flex bg-white dark:bg-[#12131a]/80 p-1 border border-indigo-100 rounded-xl text-[9px] font-bold font-display">
-                      {["Sunny", "Rainy", "Heatwave", "Cold"].map(w => (
+                    <div className="flex bg-slate-100 dark:bg-[#12131a]/80 p-1 border border-indigo-100/10 rounded-xl text-[9px] font-bold font-display gap-1 shrink-0 self-stretch sm:self-auto justify-around">
+                      {[
+                        { label: "Sunny", icon: "☀️", color: "text-amber-500" },
+                        { label: "Rainy", icon: "🌧️", color: "text-blue-500" },
+                        { label: "Heatwave", icon: "🔥", color: "text-orange-500" },
+                        { label: "Cold", icon: "❄️", color: "text-cyan-500" }
+                      ].map(w => (
                         <button 
-                          key={w}
-                          onClick={() => setWeatherMock(w)}
-                          className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer ${weatherMock === w ? 'bg-indigo-600 text-white shadow-sm' : 'bg-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:text-slate-300'}`}
+                          key={w.label}
+                          onClick={() => setWeatherMock(w.label)}
+                          className={`px-2.5 py-1 rounded-lg transition-all cursor-pointer flex items-center gap-1 ${
+                            weatherMock === w.label 
+                              ? 'bg-white dark:bg-[#12131a] text-indigo-650 dark:text-indigo-400 shadow-sm border border-indigo-100/20' 
+                              : 'bg-transparent text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-350'
+                          }`}
                         >
-                          {w}
+                          <span className={w.color}>{w.icon}</span>
+                          <span>{w.label}</span>
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  <div className="p-6">
-                    <div className="bg-[#f8fafc] dark:bg-[#090a0f] rounded-xl p-5 border border-[#e2e8f0] dark:border-[#1f212e]">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold font-display uppercase tracking-widest leading-none">Sales Forecast Multiplier</p>
-                          <p className="text-2xl font-bold font-display text-slate-800 dark:text-slate-200 mt-1">{(salesMultiplier * 100).toFixed(0)}%</p>
+                  <div className="p-3">
+                    <div className="grid grid-cols-2 gap-3">
+                      {/* Metric 1: Forecast Multiplier */}
+                      <div className="bg-gradient-to-br from-blue-50/50 to-indigo-50/20 dark:from-white/5 dark:to-white/0 rounded-2xl p-3 border border-slate-100 dark:border-white/5 flex items-center gap-2.5">
+                        <div className="p-2 bg-blue-100/50 dark:bg-blue-950/40 rounded-xl text-blue-600 dark:text-blue-400">
+                          <TrendingUp className="w-5 h-5" />
                         </div>
                         <div>
-                          <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold font-display uppercase tracking-widest leading-none text-right">Weekly Revenue target</p>
-                          <p className="text-2xl font-bold font-display text-indigo-600 mt-1 text-right">${totalWeeklySalesForecast.toFixed(0)}</p>
+                          <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider leading-none">Sales Multiplier</p>
+                          <p className="text-xl font-black font-display text-slate-800 dark:text-slate-200 mt-1">{(salesMultiplier * 100).toFixed(0)}%</p>
                         </div>
                       </div>
 
-                      <div className="mt-4 p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 text-xs font-bold text-indigo-800 flex items-start gap-2.5">
-                        <Zap className="w-4 h-4 shrink-0 text-indigo-600 mt-0.5" />
+                      {/* Metric 2: Revenue Target */}
+                      <div className="bg-gradient-to-br from-emerald-50/50 to-teal-50/20 dark:from-white/5 dark:to-white/0 rounded-2xl p-3 border border-slate-100 dark:border-white/5 flex items-center gap-2.5">
+                        <div className="p-2 bg-emerald-100/50 dark:bg-emerald-950/40 rounded-xl text-emerald-600 dark:text-emerald-400">
+                          <DollarSign className="w-5 h-5" />
+                        </div>
                         <div>
-                          {weatherMock === 'Rainy' && (
-                            <p>☔ **Rainy weather forecasted!** Cinnabon sales spike for hot cinnamon rolls & coffee. **Estimated +25% revenue.** Staff shortages may occur during standard 11AM-2PM coffee runs. We recommend adding 1 backup casual shift.</p>
-                          )}
-                          {weatherMock === 'Sunny' && (
-                            <p>☀️ **Warm & Sunny!** High mall traffic increases footfalls. **Estimated +15% cold sweets sales.** Roster is currently optimal for capacity.</p>
-                          )}
-                          {weatherMock === 'Heatwave' && (
-                            <p>🥵 **Extreme Heatwave!** Baking sweeps drop as customers avoid hot goods. **Estimated -20% sales drop.** Labor leak warning active. Trim 2 casual shifts or send staff home early to preserve profit dials.</p>
-                          )}
-                          {weatherMock === 'Cold' && (
-                            <p>❄️ **Winter Chill!** Hot baking and coffee sales stable. **Estimated +10% standard demand.** Ensure baking team is fully staffed at opening shifts.</p>
-                          )}
+                          <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider leading-none">Revenue Target</p>
+                          <p className="text-xl font-black font-display text-emerald-600 mt-1">${totalWeeklySalesForecast.toFixed(0)}</p>
                         </div>
                       </div>
-                      <div className="flex gap-2 select-none border-t border-[#e2e8f0] dark:border-[#1f212e]/60 pt-3 mt-3.5">
-                        <button 
-                          type="button"
-                          onClick={async () => {
-                            const { value: val } = await Swal.fire({
-                              title: '📝 Set Weekly Sales Forecast',
-                              text: 'Enter the base weekly sales target before weather optimization:',
-                              input: 'number',
-                              inputValue: manualSalesForecast,
-                              showCancelButton: true,
-                              confirmButtonColor: '#4F46E5',
-                              inputValidator: (value) => {
-                                if (!value || isNaN(value) || parseFloat(value) <= 0) {
-                                  return 'Please enter a valid positive number!';
-                                }
-                              }
-                            });
-                            if (val) {
-                              setManualSalesForecast(parseFloat(val));
-                              Swal.fire({
-                                icon: 'success',
-                                title: 'Base Sales Forecast Set!',
-                                text: `Base sales target updated to $${parseFloat(val).toLocaleString()}`,
-                                timer: 2000,
-                                showConfirmButton: false
-                              });
-                            }
-                          }}
-                          className="flex-grow py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-650 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                        >
-                          <Sliders className="w-3.5 h-3.5" />
-                          <span>Sales Forecast</span>
-                        </button>
+                    </div>
 
-                        <button 
-                          type="button"
-                          onClick={async () => {
-                            const { value: val } = await Swal.fire({
-                              title: '💰 Set Weekly Labor Budget',
-                              text: 'Enter the maximum weekly labor budget spend limit:',
-                              input: 'number',
-                              inputValue: budgetTarget,
-                              showCancelButton: true,
-                              confirmButtonColor: '#4F46E5',
-                              inputValidator: (value) => {
-                                if (!value || isNaN(value) || parseFloat(value) <= 0) {
-                                  return 'Please enter a valid positive number!';
-                                }
-                              }
-                            });
-                            if (val) {
-                              setBudgetTarget(parseFloat(val));
-                              Swal.fire({
-                                icon: 'success',
-                                title: 'Weekly Labor Budget Set!',
-                                text: `Labor budget limit updated to $${parseFloat(val).toLocaleString()}`,
-                                timer: 2000,
-                                showConfirmButton: false
-                              });
-                            }
-                          }}
-                          className="flex-grow py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-650 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                        >
-                          <DollarSign className="w-3.5 h-3.5" />
-                          <span>Labor Budget</span>
-                        </button>
+                    {/* Immersive CSS-Animated Live Weather Canvas */}
+                    <div className="mt-3">
+                      <WeatherLiveCanvas weather={weatherMock} />
+                    </div>
+
+                    {/* Meteorological Advice Box */}
+                    <div className="mt-3 p-3 rounded-2xl bg-indigo-50/40 dark:bg-white/5 border border-indigo-150/30 text-xs font-bold text-indigo-905 dark:text-indigo-305 flex items-start gap-3">
+                      <div className="text-2xl shrink-0 mt-0.5 select-none">
+                        {weatherMock === 'Sunny' && "☀️"}
+                        {weatherMock === 'Rainy' && "🌧️"}
+                        {weatherMock === 'Heatwave' && "🔥"}
+                        {weatherMock === 'Cold' && "❄️"}
                       </div>
+                      <div className="leading-relaxed">
+                        {weatherMock === 'Rainy' && (
+                          <p>🌦️ **Meteorological Warning:** Rain triggers convenience store rushes. Expected **+25% sales** spike for hot items. Roster backup shifts.</p>
+                        )}
+                        {weatherMock === 'Sunny' && (
+                          <p>☀️ **Optimal Conditions:** High outdoor foot traffic. Base sales forecasts up **+15%**. Current roster slots are perfectly optimized.</p>
+                        )}
+                        {weatherMock === 'Heatwave' && (
+                          <p>🔥 **Heat Warning:** Extreme temperatures drop overall customer visits. **Trim 2 open shifts** to secure profit margin dials.</p>
+                        )}
+                        {weatherMock === 'Cold' && (
+                          <p>❄️ **Stable Winter Forecast:** Morning traffic expected to spike. **+10% coffee targets**. Ensure early openers are checked-in.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Fine-Tuning Controls Row */}
+                    <div className="flex gap-2 select-none border-t border-[#e2e8f0] dark:border-[#1f212e]/60 pt-2.5 mt-3">
+                      <button 
+                        type="button"
+                        onClick={async () => {
+                          const { value: val } = await Swal.fire({
+                            title: '📝 Set Base Sales Target',
+                            text: 'Enter base sales target before weather weighting:',
+                            input: 'number',
+                            inputValue: manualSalesForecast,
+                            showCancelButton: true,
+                            confirmButtonColor: '#4F46E5',
+                            inputValidator: (value) => {
+                              if (!value || isNaN(value) || parseFloat(value) <= 0) {
+                                return 'Please enter a valid positive number!';
+                              }
+                            }
+                          });
+                          if (val) {
+                            setManualSalesForecast(parseFloat(val));
+                            Swal.fire({
+                              icon: 'success',
+                              title: 'Base Sales Target Set!',
+                              text: `Target updated to $${parseFloat(val).toLocaleString()}`,
+                              timer: 2000,
+                              showConfirmButton: false
+                            });
+                          }
+                        }}
+                        className="flex-grow py-2 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-350 border border-slate-200/50 dark:border-white/10 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                      >
+                        <Sliders className="w-3 h-3 text-slate-400 dark:text-slate-500" />
+                        <span>Sales Forecast</span>
+                      </button>
+
+                      <button 
+                        type="button"
+                        onClick={async () => {
+                          const { value: val } = await Swal.fire({
+                            title: '💰 Set Weekly Labor Budget',
+                            text: 'Enter weekly labor budget spend limit:',
+                            input: 'number',
+                            inputValue: budgetTarget,
+                            showCancelButton: true,
+                            confirmButtonColor: '#4F46E5',
+                            inputValidator: (value) => {
+                              if (!value || isNaN(value) || parseFloat(value) <= 0) {
+                                return 'Please enter a valid positive number!';
+                              }
+                            }
+                          });
+                          if (val) {
+                            setBudgetTarget(parseFloat(val));
+                            Swal.fire({
+                              icon: 'success',
+                              title: 'Weekly Labor Budget Set!',
+                              text: `Budget updated to $${parseFloat(val).toLocaleString()}`,
+                              timer: 2000,
+                              showConfirmButton: false
+                            });
+                          }
+                        }}
+                        className="flex-grow py-2 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-slate-350 border border-slate-200/50 dark:border-white/10 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-sm active:scale-95"
+                      >
+                        <DollarSign className="w-3 h-3 text-slate-400 dark:text-slate-500" />
+                        <span>Labor Budget</span>
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-6 pt-0 border-t border-[#e2e8f0] dark:border-[#1f212e] flex justify-between gap-3 mt-4">
+                <div className="p-3 pt-0 border-t border-slate-100 dark:border-white/5 flex justify-between gap-2 mt-1.5">
                   {weatherMock === 'Heatwave' ? (
                     <button 
                       onClick={() => { setBudgetTarget(4000); alert("Labour target trimmed to $4000 to defend profit margins."); }}
-                      className="flex-grow py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold font-display text-[10px] uppercase tracking-wider shadow-sm flex items-center justify-center gap-1.5 animate-pulse"
+                      className="flex-grow py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider shadow-sm flex items-center justify-center gap-1.5 animate-pulse"
                     >
                       <Trash2 className="w-4 h-4" /> Trim Labor Target to $4,000
                     </button>
                   ) : (
                     <button 
                       onClick={triggerMagicBlanks}
-                      className="flex-grow py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[10px] uppercase tracking-wider shadow-sm flex items-center justify-center gap-1.5"
+                      className="flex-grow py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider shadow-md shadow-indigo-600/10 flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                     >
                       <Zap className="w-4 h-4 animate-pulse" /> Auto-optimize for {weatherMock} weather
                     </button>
@@ -2601,73 +3134,262 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
               </div>
 
-              {/* Innovation 5: Labor Cost-To-Sales (LCTS) speedometer Dial */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-6 shadow-sm flex flex-col justify-between items-center text-center">
-                <div className="w-full flex justify-between items-center mb-4">
-                  <div className="flex items-center gap-2 text-left">
-                    <div className="p-3 bg-emerald-50 rounded-xl text-emerald-600">
-                      <DollarSign className="w-5 h-5" />
+              {/* Unified Task Command Center */}
+              <div className="tabkey-glass-card tabkey-shine-orange p-3.5 shadow-lg flex flex-col justify-between text-left lg:col-span-1 select-none">
+                <div>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2.5 bg-orange-50 dark:bg-orange-950/40 rounded-xl text-orange-600 dark:text-orange-400">
+                      <CheckSquare className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold font-display text-sm text-slate-800 dark:text-slate-200 leading-none">📊 Live Labor Profit Dial (LCTS %)</h4>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Live labor costs vs. sales target percentage</p>
+                      <h4 className="font-bold font-display text-base text-slate-855 dark:text-slate-100 leading-none">📋 Unified Task Command Center</h4>
+                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Manage manual dispatches & automatic shift templates</p>
                     </div>
                   </div>
+
+                  {/* Tab Switcher */}
+                  <div className="bg-slate-100 dark:bg-[#090a0f] p-1 border border-slate-200/50 dark:border-white/5 rounded-xl grid grid-cols-3 text-center text-[9px] font-bold font-display uppercase tracking-wider select-none mb-3.5">
+                    <button 
+                      type="button"
+                      onClick={() => setTaskTab('dispatch')}
+                      className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                        taskTab === 'dispatch' ? 'bg-white dark:bg-[#12131a] text-slate-850 dark:text-slate-100 shadow-sm border border-indigo-100/10' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650'
+                      }`}
+                    >
+                      ⚡ Dispatch
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setTaskTab('opening')}
+                      className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                        taskTab === 'opening' ? 'bg-white dark:bg-[#12131a] text-slate-850 dark:text-slate-100 shadow-sm border border-indigo-100/10' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650'
+                      }`}
+                    >
+                      🌅 Opening
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setTaskTab('closing')}
+                      className={`py-1.5 rounded-lg transition-all cursor-pointer ${
+                        taskTab === 'closing' ? 'bg-white dark:bg-[#12131a] text-slate-850 dark:text-slate-100 shadow-sm border border-indigo-100/10' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650'
+                      }`}
+                    >
+                      🔐 Closing
+                    </button>
+                  </div>
+
+                  {/* Tab 1: Dispatch (Manual Task Dispatcher) */}
+                  {taskTab === 'dispatch' && (
+                    <form onSubmit={handleDispatchQuickTask} className="space-y-3.5 text-xs">
+                      {/* Selector for assignment type */}
+                      <div className="bg-slate-50 dark:bg-white/5 p-1 border border-slate-200/50 dark:border-white/5 rounded-xl grid grid-cols-2 text-center text-[9px] font-bold font-display uppercase tracking-wider select-none">
+                        <button 
+                          type="button"
+                          onClick={() => setTaskAssignType('person')}
+                          className={`py-1 rounded-md transition-all cursor-pointer ${
+                            taskAssignType === 'person' ? 'bg-white dark:bg-[#12131a] text-slate-850 dark:text-slate-100 shadow-sm border border-indigo-100/10' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650'
+                          }`}
+                        >
+                          👤 Staff Member
+                        </button>
+                        <button 
+                          type="button"
+                          onClick={() => setTaskAssignType('shift')}
+                          className={`py-1 rounded-md transition-all cursor-pointer ${
+                            taskAssignType === 'shift' ? 'bg-white dark:bg-[#12131a] text-slate-850 dark:text-slate-100 shadow-sm border border-indigo-100/10' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650'
+                          }`}
+                        >
+                          ⏱️ Active Shift
+                        </button>
+                      </div>
+
+                      {/* Task Title Input */}
+                      <div className="space-y-1">
+                        <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">Task Description</label>
+                        <input 
+                          type="text"
+                          placeholder="e.g. wipe ovens, verify tills..."
+                          required
+                          value={newTaskTitle}
+                          onChange={(e) => setNewTaskTitle(e.target.value)}
+                          className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 focus:outline-none focus:border-indigo-500"
+                        />
+                      </div>
+
+                      {/* Assignee select box based on mode */}
+                      {taskAssignType === 'person' ? (
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">Choose Employee</label>
+                          <select 
+                            value={taskAssignee}
+                            onChange={(e) => setTaskAssignee(e.target.value)}
+                            required
+                            className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 outline-none"
+                          >
+                            <option value="">Select staff...</option>
+                            {profiles.filter(p => p.role !== 'manager').map(p => (
+                              <option key={p.id} value={p.id}>{p.full_name}</option>
+                            ))}
+                          </select>
+                        </div>
+                      ) : (
+                        <div className="space-y-1">
+                          <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500 ml-1">Choose Today's Shift</label>
+                          <select 
+                            value={taskShiftId}
+                            onChange={(e) => setTaskShiftId(e.target.value)}
+                            required
+                            className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2 text-xs font-bold text-slate-700 dark:text-slate-350 outline-none"
+                          >
+                            <option value="">Select shift...</option>
+                            {weekShifts.filter(s => s.user_id !== 'open').map(s => {
+                              const empName = profiles.find(p => p.id === s.user_id)?.full_name || "Employee";
+                              return (
+                                <option key={s.id} value={s.id}>
+                                  {s.shift_date} ({s.start_time} - {s.end_time}) • {empName}
+                                </option>
+                              );
+                            })}
+                          </select>
+                        </div>
+                      )}
+
+                      <button 
+                        type="submit"
+                        className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-md shadow-indigo-600/10 active:scale-95 cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Dispatch Custom Task</span>
+                      </button>
+                    </form>
+                  )}
+
+                  {/* Tab 2: Opening Shift Automatic Templates */}
+                  {taskTab === 'opening' && (
+                    <div className="space-y-3 text-xs text-left">
+                      <p className="text-[10px] font-bold font-display text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1 mb-1 leading-none">🌅 Opening Shift Templates</p>
+                      
+                      {/* List of items */}
+                      <div className="space-y-2 max-h-[140px] overflow-y-auto premium-scrollbar pr-1">
+                        {openingTemplates.map((t, idx) => (
+                          <div key={idx} className="bg-slate-50 dark:bg-white/5 p-2 px-2.5 rounded-xl border border-slate-100 dark:border-white/5 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-755 dark:text-slate-300">
+                            <span className="line-clamp-2 leading-tight">{t}</span>
+                            <button 
+                              onClick={() => handleRemoveTemplateItem('opening', idx)}
+                              className="text-rose-500 hover:text-rose-700 transition-all shrink-0 cursor-pointer p-0.5"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add new input */}
+                      <div className="flex gap-2 pt-1 border-t border-slate-100 dark:border-white/5">
+                        <input 
+                          type="text"
+                          placeholder="e.g. prep bakery showcase..."
+                          value={newTemplateItem}
+                          onChange={(e) => setNewTemplateItem(e.target.value)}
+                          className="flex-grow bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-350 focus:outline-none"
+                        />
+                        <button 
+                          onClick={() => handleAddTemplateItem('opening')}
+                          className="px-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider cursor-pointer select-none active:scale-95 transition-all"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold leading-normal">
+                        ℹ️ Seeding active: Any shift scheduled starting before 10:00 AM automatically receives these tasks at homepage load.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Tab 3: Closing Shift Automatic Templates */}
+                  {taskTab === 'closing' && (
+                    <div className="space-y-3 text-xs text-left">
+                      <p className="text-[10px] font-bold font-display text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1 mb-1 leading-none">🔐 Closing Shift Templates</p>
+                      
+                      {/* List of items */}
+                      <div className="space-y-2 max-h-[140px] overflow-y-auto premium-scrollbar pr-1">
+                        {closingTemplates.map((t, idx) => (
+                          <div key={idx} className="bg-slate-50 dark:bg-white/5 p-2 px-2.5 rounded-xl border border-slate-100 dark:border-white/5 flex items-center justify-between gap-2 text-[11px] font-semibold text-slate-755 dark:text-slate-300">
+                            <span className="line-clamp-2 leading-tight">{t}</span>
+                            <button 
+                              onClick={() => handleRemoveTemplateItem('closing', idx)}
+                              className="text-rose-500 hover:text-rose-700 transition-all shrink-0 cursor-pointer p-0.5"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add new input */}
+                      <div className="flex gap-2 pt-1 border-t border-slate-100 dark:border-white/5">
+                        <input 
+                          type="text"
+                          placeholder="e.g. secure main entrance..."
+                          value={newTemplateItem}
+                          onChange={(e) => setNewTemplateItem(e.target.value)}
+                          className="flex-grow bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-700 dark:text-slate-350 focus:outline-none"
+                        />
+                        <button 
+                          onClick={() => handleAddTemplateItem('closing')}
+                          className="px-3 bg-[#6366f1] hover:bg-[#4f46e5] text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider cursor-pointer select-none active:scale-95 transition-all"
+                        >
+                          + Add
+                        </button>
+                      </div>
+                      <p className="text-[8px] text-slate-400 dark:text-slate-500 font-bold leading-normal">
+                        ℹ️ Seeding active: Any shift scheduled ending at or after 6:00 PM (18:00) automatically receives these tasks at homepage load.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* TabKey Time-wise Preset Shortcuts */}
+                  {taskTab === 'dispatch' && (
+                    <div className="mt-3.5 pt-3 border-t border-[#e2e8f0] dark:border-[#1f212e] space-y-2">
+                      <p className="text-[9px] font-bold font-display uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none ml-1">⚡ 1-Click Time-wise Presets</p>
+                      
+                      <div className="grid grid-cols-3 gap-1.5 select-none pt-1">
+                        <button 
+                          type="button"
+                          onClick={() => handleDispatchTimePreset('morning')}
+                          className="p-2 bg-amber-50 dark:bg-amber-950/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 border border-amber-100/40 rounded-xl text-[8px] font-bold font-display text-amber-700 dark:text-amber-450 flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
+                          title="Assign Morning Opening Bake tasks"
+                        >
+                          <span>🌅</span>
+                          <span>Morning</span>
+                        </button>
+                        
+                        <button 
+                          type="button"
+                          onClick={() => handleDispatchTimePreset('midday')}
+                          className="p-2 bg-indigo-50 dark:bg-indigo-950/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 border border-indigo-100/40 rounded-xl text-[8px] font-bold font-display text-indigo-700 dark:text-indigo-450 flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
+                          title="Assign Mid-day Clean & Coffee tasks"
+                        >
+                          <span>☕</span>
+                          <span>Midday</span>
+                        </button>
+                        
+                        <button 
+                          type="button"
+                          onClick={() => handleDispatchTimePreset('evening')}
+                          className="p-2 bg-[#090a0f] dark:bg-white/5 hover:bg-black dark:hover:bg-white/10 border border-slate-800 dark:border-white/10 rounded-xl text-[8px] font-bold font-display text-white dark:text-slate-300 flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
+                          title="Assign Evening Closeout Security tasks"
+                        >
+                          <span>🔐</span>
+                          <span>Evening</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                {/* SVG speedometer Dial */}
-                <div className="relative w-44 h-44 flex items-center justify-center select-none">
-                  {/* Outer circle */}
-                  <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                    <circle cx="50" cy="50" r="40" stroke="#F1F5F9" strokeWidth="8" fill="transparent" />
-                    <circle 
-                      cx="50" 
-                      cy="50" 
-                      r="40" 
-                      stroke={currentLCTS > 30 ? "#EF4444" : currentLCTS > 20 ? "#6366F1" : "#10B981"} 
-                      strokeWidth="8" 
-                      fill="transparent" 
-                      strokeDasharray={`${2 * Math.PI * 40}`}
-                      strokeDashoffset={`${2 * Math.PI * 40 * (1 - Math.min(currentLCTS, 50) / 50)}`}
-                      className="transition-all duration-500 ease-out"
-                    />
-                  </svg>
-                  
-                  {/* Dial text */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <p className="text-3xl font-bold font-display text-slate-800 dark:text-slate-200 leading-none tracking-tight">{currentLCTS.toFixed(1)}%</p>
-                    <p className="text-[8px] font-bold font-display uppercase text-slate-400 dark:text-slate-500 tracking-wider mt-1.5">Labor to Sales</p>
-                    <span className={`mt-2 px-2 py-0.5 rounded text-[8px] font-bold font-display uppercase tracking-widest ${
-                      currentLCTS > 30 ? 'bg-rose-50 text-rose-600' :
-                      currentLCTS > 20 ? 'bg-indigo-50 text-indigo-600' :
-                      'bg-emerald-50 text-emerald-600'
-                    }`}>
-                      {currentLCTS > 30 ? 'Overstaffing Alert' :
-                       currentLCTS > 20 ? 'Optimal margin' :
-                       'Excellent Efficiency'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Dynamic dial adjusters */}
-                <div className="w-full bg-[#f8fafc] dark:bg-[#090a0f] p-4 rounded-xl border border-[#e2e8f0] dark:border-[#1f212e] mt-2">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500">Interactive: Adjust estimated daily sales target slider to see Dial change:</p>
-                  <input 
-                    type="range" 
-                    min="2000" 
-                    max="8000" 
-                    value={estimatedDailySales[3]}
-                    onChange={(e) => {
-                      const val = parseInt(e.target.value);
-                      setEstimatedDailySales(prev => ({ ...prev, 3: val }));
-                    }}
-                    className="w-full mt-2 accent-indigo-600 h-1 bg-slate-200 rounded-lg cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[9px] text-slate-400 dark:text-slate-500 font-bold mt-1">
-                    <span>Low Sales ($2K)</span>
-                    <span className="text-indigo-600 font-bold font-display">Thu Target: ${estimatedDailySales[3]}</span>
-                    <span>High Sales ($8K)</span>
-                  </div>
+                <div className="mt-3.5 p-2 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[8px] text-slate-400 dark:text-slate-500 font-bold leading-normal">
+                  🚀 Dispatched tasks sync instantly to the employees' active checklists.
                 </div>
               </div>
 
@@ -2677,21 +3399,21 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Innovation 3: Sentiment & Fatigue Burnout Radar */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl shadow-sm flex flex-col justify-between overflow-hidden text-left">
+              <div className="tabkey-glass-card flex flex-col justify-between overflow-hidden text-left shadow-lg">
                 <div>
                   {/* Header Box with Light Background */}
-                  <div className="bg-indigo-50/60 p-5 border-b border-indigo-100/60 flex items-center gap-3 select-none">
-                    <div className="p-2.5 bg-indigo-100 rounded-xl text-indigo-750">
+                  <div className="bg-indigo-50/20 dark:bg-white/5 p-5 border-b border-indigo-100/30 dark:border-white/5 flex items-center gap-3 select-none">
+                    <div className="p-2.5 bg-indigo-100 dark:bg-indigo-950/40 rounded-xl text-indigo-750 dark:text-indigo-400">
                       <Brain className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold font-display text-base text-indigo-950 leading-none">🧠 Employee Fatigue Radar</h4>
+                      <h4 className="font-bold font-display text-base text-indigo-950 dark:text-slate-100 leading-none">🧠 Employee Fatigue Radar</h4>
                       <p className="text-[10px] text-indigo-650 font-bold font-display mt-1">AI monitors employee rest periods & stress risks</p>
                     </div>
                   </div>
 
                   <div className="p-6">
-                    <div className="space-y-3.5 max-h-[220px] overflow-y-auto pr-1">
+                    <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1.5 premium-scrollbar">
                       {profiles.filter(p => p.role !== 'manager').map(p => {
                         // Compute fatigue scores dynamically based on scheduled hours and gaps
                         const userShifts = weekShifts.filter(s => s.user_id === p.id);
@@ -2702,28 +3424,28 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                         if (p.id === 'p-bella') fatigue += 28; // Overpart time contracted stress
                         if (p.id === 'p-david') fatigue += 15;
                         
-                        const riskColor = fatigue > 80 ? 'text-rose-600 bg-rose-50 border-rose-100' : fatigue > 50 ? 'text-amber-600 bg-amber-50 border-amber-100' : 'text-emerald-600 bg-emerald-50 border-emerald-100';
+                        const riskColor = fatigue > 80 ? 'text-rose-600 bg-rose-50 dark:bg-rose-950/20 border-rose-100 dark:border-rose-900/30' : fatigue > 50 ? 'text-amber-600 bg-amber-50 dark:bg-amber-950/20 border-amber-100 dark:border-amber-900/30' : 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-100 dark:border-emerald-900/30';
 
                         return (
                           <div 
                             key={p.id}
                             onClick={() => setSelectedFatigueEmp(p)}
-                            className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-3 cursor-pointer hover:border-indigo-400 transition-all select-none active:scale-[0.98]"
+                            className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-indigo-50/30 dark:hover:bg-white/5 border border-slate-150/70 dark:border-white/5 rounded-2xl p-3 cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all select-none active:scale-[0.98] shadow-2xs"
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                               <div 
                                 style={{ backgroundColor: p.color || '#4F46E5' }}
-                                className="w-7 h-7 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center"
+                                className="w-8 h-8 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center shadow-sm shrink-0"
                               >
                                 {p.full_name[0]}
                               </div>
                               <div>
                                 <p className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 leading-none">{p.full_name}</p>
-                                <p className="text-[9px] font-bold text-slate-400 dark:text-slate-500 mt-1">{consecutiveDays} shifts scheduled</p>
+                                <p className="text-[9px] font-bold text-slate-400 mt-1.5">{consecutiveDays} shifts scheduled</p>
                               </div>
                             </div>
 
-                            <div className="text-right">
+                            <div className="text-right shrink-0">
                               <span className={`px-2.5 py-1 rounded-xl text-[9px] font-bold font-display border uppercase tracking-wider ${riskColor}`}>
                                 {fatigue}% Stress
                               </span>
@@ -2754,19 +3476,19 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </div>
 
               {/* Late Alerts with working prefilled WhatsApp links */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-6 shadow-sm flex flex-col justify-between">
+              <div className="tabkey-glass-card p-6 shadow-lg flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="p-3 bg-rose-50 rounded-xl text-rose-600">
+                  <div className="flex items-center gap-2 mb-4 select-none">
+                    <div className="p-3 bg-rose-50 dark:bg-rose-950/40 rounded-xl text-rose-600 dark:text-rose-455">
                       <AlertTriangle className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold font-display text-sm text-slate-800 dark:text-slate-200 leading-none">⚠️ Late Alerts Panel</h4>
+                      <h4 className="font-bold font-display text-sm text-slate-805 dark:text-slate-205 leading-none">⚠️ Late Alerts Panel</h4>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Real-time tardiness detection (WhatsApp link active)</p>
                     </div>
                   </div>
 
-                  <div className="space-y-3.5 max-h-[220px] overflow-y-auto pr-1">
+                  <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1.5 premium-scrollbar">
                     {/* Simulated late staff seed if list is empty to show how it functions */}
                     {lateStaffList.length === 0 ? (
                       <div className="p-8 border border-dashed border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-center text-slate-400 dark:text-slate-500 text-xs font-bold leading-relaxed">
@@ -2776,20 +3498,20 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       lateStaffList.map(item => {
                         const phone = item.employee?.phone || "0400000000";
                         const name = item.employee?.full_name || "Staff";
-                        const whatsappUrl = `https://wa.me/${phone.replace(/\s+/g, '')}?text=Hey%20${encodeURIComponent(name)},%20just%20checking%20in%20on%20your%20scheduled%20Cinnabon%20shift%20today!%20Hope%20everything%20is%20alright.`;
+                        const whatsappUrl = `https://wa.me/${phone.replace(/\s+/g, '')}?text=Hey%20${encodeURIComponent(name)},%20just%20checking%20in%20on%20your%2520scheduled%20TabKey%20shift%20today!%20Hope%20everything%20is%20alright.`;
 
                         return (
-                          <div key={item.shift.id} className="flex justify-between items-center bg-rose-50 border border-rose-100 rounded-xl p-3">
-                            <div className="flex items-center gap-2">
+                          <div key={item.shift.id} className="flex justify-between items-center bg-rose-50/50 dark:bg-rose-950/10 border border-rose-100 dark:border-rose-900/20 rounded-2xl p-3 hover:scale-[1.01] transition-all shadow-2xs">
+                            <div className="flex items-center gap-3">
                               <div 
                                 style={{ backgroundColor: item.employee?.color || '#EF4444' }}
-                                className="w-7 h-7 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center"
+                                className="w-8 h-8 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center shadow-sm shrink-0"
                               >
                                 {name[0]}
                               </div>
                               <div>
                                 <p className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 leading-none">{name}</p>
-                                <p className="text-[9px] font-bold text-rose-600 mt-1">{item.minsLate} mins late today</p>
+                                <p className="text-[9px] font-black text-rose-600 mt-1.5">{item.minsLate} mins late today</p>
                               </div>
                             </div>
                             
@@ -2797,9 +3519,9 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                               href={whatsappUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 text-center flex items-center gap-1 shrink-0"
+                              className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 text-center flex items-center gap-1.5 shrink-0 shadow-sm shadow-emerald-600/10"
                             >
-                              <MessageSquare className="w-3 h-3" /> WhatsApp
+                              <MessageSquare className="w-3.5 h-3.5" /> WhatsApp
                             </a>
                           </div>
                         );
@@ -2814,34 +3536,34 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </div>
 
               {/* Birthday Alerts Card */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-6 shadow-sm flex flex-col justify-between">
+              <div className="tabkey-glass-card p-6 shadow-lg flex flex-col justify-between">
                 <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="p-3 bg-indigo-50 rounded-xl text-indigo-650">
+                  <div className="flex items-center gap-2 mb-4 select-none">
+                    <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl text-indigo-655 dark:text-indigo-400">
                       <Heart className="w-5 h-5" />
                     </div>
                     <div>
-                      <h4 className="font-bold font-display text-sm text-slate-805 leading-none">🎂 Birthday Alerts</h4>
+                      <h4 className="font-bold font-display text-sm text-slate-805 dark:text-slate-205 leading-none">🎂 Birthday Alerts</h4>
                       <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Upcoming staff birthdays in the next 7 days</p>
                     </div>
                   </div>
 
-                  <div className="space-y-3.5 max-h-[220px] overflow-y-auto pr-1">
+                  <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1.5 premium-scrollbar">
                     {upcomingBirthdays.length === 0 ? (
                       <div className="space-y-3">
                         {/* Seeded example for Alex Mercer */}
-                        <div className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-3">
-                          <div className="flex items-center gap-2">
-                            <div className="w-7 h-7 rounded-full bg-indigo-500 text-white font-bold font-display text-xs uppercase flex items-center justify-center">A</div>
+                        <div className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-indigo-50/30 dark:hover:bg-white/5 border border-slate-150/70 dark:border-white/5 rounded-2xl p-3 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all shadow-2xs">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-indigo-500 text-white font-bold font-display text-xs uppercase flex items-center justify-center shadow-sm shrink-0">A</div>
                             <div>
                               <p className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 leading-none">Alex Mercer</p>
-                              <p className="text-[9px] font-bold text-indigo-655 mt-1">Birthday in 5 days (May 28)</p>
+                              <p className="text-[9px] font-black text-indigo-650 dark:text-indigo-400 mt-1.5">Birthday in 5 days (May 28)</p>
                             </div>
                           </div>
                           
                           <button 
                             onClick={() => { setBirthdayEmployee(profiles[1]); setShowBirthdayModal(true); }}
-                            className="bg-indigo-650 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 shrink-0"
+                            className="bg-indigo-650 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 shrink-0 shadow-sm"
                           >
                             Send Greeting
                           </button>
@@ -2852,23 +3574,23 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       </div>
                     ) : (
                       upcomingBirthdays.map(item => (
-                        <div key={item.employee.id} className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-3">
-                          <div className="flex items-center gap-2">
+                        <div key={item.employee.id} className="flex justify-between items-center bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-indigo-50/30 dark:hover:bg-white/5 border border-slate-150/70 dark:border-white/5 rounded-2xl p-3 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all shadow-2xs">
+                          <div className="flex items-center gap-3">
                             <div 
                               style={{ backgroundColor: item.employee.color || '#4F46E5' }}
-                              className="w-7 h-7 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center"
+                              className="w-8 h-8 rounded-full text-white font-bold font-display text-xs uppercase flex items-center justify-center shadow-sm shrink-0"
                             >
                               {item.employee.full_name[0]}
                             </div>
                             <div>
                               <p className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 leading-none">{item.employee.full_name}</p>
-                              <p className="text-[9px] font-bold text-indigo-655 mt-1">Birthday in {item.daysRemaining} days ({item.employee.dob.split('-').slice(1).reverse().join('/')})</p>
+                              <p className="text-[9px] font-black text-indigo-655 mt-1.5">Birthday in {item.daysRemaining} days ({item.employee.dob.split('-').slice(1).reverse().join('/')})</p>
                             </div>
                           </div>
                           
                           <button 
                             onClick={() => { setBirthdayEmployee(item.employee); setShowBirthdayModal(true); }}
-                            className="bg-indigo-650 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 shrink-0"
+                            className="bg-indigo-650 hover:bg-indigo-700 text-white px-3.5 py-2 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider transition-all select-none active:scale-95 shrink-0 shadow-sm"
                           >
                             Send Greeting
                           </button>
@@ -2877,358 +3599,11 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                     )}
                   </div>
                 </div>
-
                 <div className="mt-4 p-3 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[9px] text-slate-400 dark:text-slate-500 font-bold">
-                  🌀 Birthday triggers render branded HTML cards with special Cinnabon discounts and greetings.
+                  🌀 Birthday triggers render branded HTML cards with special TabKey discounts and greetings.
                 </div>
               </div>
 
-            </div>
-
-            {/* D. Row 3: Handovers Feed & Timeline activity logs */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              
-              {/* Innovation 5: Smart-Walk Handover Diary */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl shadow-sm flex flex-col justify-between overflow-hidden lg:col-span-2 text-left">
-                <div>
-                  {/* Header Box with Light Background */}
-                  <div className="bg-indigo-50/60 p-5 border-b border-indigo-100/60 flex items-center gap-3 select-none">
-                    <div className="p-2.5 bg-indigo-100 rounded-xl text-indigo-750">
-                      <CheckSquare className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold font-display text-base text-indigo-950 leading-none">📋 Smart-Walk Handover Diary</h4>
-                      <p className="text-[10px] text-indigo-650 font-bold font-display mt-1">Manager auditing feed of supervisor shift crossovers</p>
-                    </div>
-                  </div>
-
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {handovers.length === 0 ? (
-                        <div className="col-span-2 p-8 border border-dashed border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-center text-slate-400 dark:text-slate-500 font-bold text-xs">
-                          No shift handover logs submitted for this roster period.
-                        </div>
-                      ) : (
-                        handovers.slice(0, 2).map(h => (
-                          <div 
-                            key={h.id} 
-                            onClick={() => { setSelectedHandover(h); setShowHandoverModal(true); }}
-                            className="bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-slate-100 dark:bg-[#090a0f]/70 border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-4 transition-all cursor-pointer select-none active:scale-[0.98] flex flex-col justify-between h-40"
-                          >
-                            <div>
-                              <div className="flex justify-between items-start">
-                                <span className="text-[9px] font-bold font-display uppercase text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded leading-none">{h.type}</span>
-                                <div className="flex text-amber-500">
-                                  {Array.from({ length: h.rating }).map((_, idx) => (
-                                    <span key={idx} className="text-xs">★</span>
-                                  ))}
-                                </div>
-                              </div>
-                              
-                              <h5 className="font-bold font-display text-slate-800 dark:text-slate-200 text-xs mt-2.5 leading-none">Supervisor: {h.lead_name}</h5>
-                              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Date: {h.shift_date ? h.shift_date.split('-').slice(1).reverse().join('/') : 'N/A'}</p>
-                              <p className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 mt-2 truncate font-medium">{h.notes}</p>
-                            </div>
-
-                            <div className="flex justify-between items-center pt-2 border-t border-[#e2e8f0] dark:border-[#1f212e]/50 mt-2">
-                              <span className="text-[8px] font-bold font-display text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">{h.completed_tasks.length} Checklists complete</span>
-                              <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500">Click to view audit</span>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-6 pt-0 border-t border-[#e2e8f0] dark:border-[#1f212e] flex justify-between items-center text-xs mt-4">
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold">Smart-Walk handovers are completed dynamically by staff on mobile portals before checkout.</p>
-                  <button 
-                    onClick={() => { setSelectedHandover(handovers[0]); setShowHandoverModal(true); }}
-                    className="text-indigo-600 hover:text-indigo-800 font-bold font-display flex items-center gap-1 cursor-pointer"
-                  >
-                    <span>View full Handover Logs calendar</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-
-              {/* Daily Task Checklist Dispatcher Shortcut */}
-              <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-6 shadow-sm flex flex-col justify-between text-left">
-                <div>
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="p-3 bg-indigo-50 rounded-xl text-indigo-650">
-                      <CheckSquare className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <h4 className="font-bold font-display text-sm text-slate-800 dark:text-slate-200 leading-none">📋 One-Touch Task Dispatcher</h4>
-                      <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">One-click daily tasks by employee, shift, or preset times</p>
-                    </div>
-                  </div>
-
-                  <form onSubmit={handleDispatchQuickTask} className="mt-4 space-y-3 text-xs">
-                    {/* Selector for assignment type */}
-                    <div className="bg-slate-100 dark:bg-[#090a0f] p-1 rounded-xl grid grid-cols-2 text-center text-[9px] font-bold font-display uppercase tracking-wider select-none">
-                      <button 
-                        type="button"
-                        onClick={() => setTaskAssignType('person')}
-                        className={`py-1.5 rounded-lg transition-all cursor-pointer ${
-                          taskAssignType === 'person' ? 'bg-white dark:bg-[#12131a] text-slate-800 dark:text-slate-200 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:text-slate-400 dark:text-slate-500'
-                        }`}
-                      >
-                        👤 Staff Member
-                      </button>
-                      <button 
-                        type="button"
-                        onClick={() => setTaskAssignType('shift')}
-                        className={`py-1.5 rounded-lg transition-all cursor-pointer ${
-                          taskAssignType === 'shift' ? 'bg-white dark:bg-[#12131a] text-slate-800 dark:text-slate-200 shadow-sm' : 'text-slate-400 dark:text-slate-500 hover:text-slate-650 dark:text-slate-400 dark:text-slate-500'
-                        }`}
-                      >
-                        ⏱️ Active Shift
-                      </button>
-                    </div>
-
-                    {/* Task Title Input */}
-                    <div className="space-y-1">
-                      <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500">Task Title</label>
-                      <input 
-                        type="text"
-                        placeholder="e.g. wipe ovens, verify tills..."
-                        required
-                        value={newTaskTitle}
-                        onChange={(e) => setNewTaskTitle(e.target.value)}
-                        className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
-                      />
-                    </div>
-
-                    {/* Assignee select box based on mode */}
-                    {taskAssignType === 'person' ? (
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500">Choose Employee</label>
-                        <select 
-                          value={taskAssignee}
-                          onChange={(e) => setTaskAssignee(e.target.value)}
-                          required
-                          className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none"
-                        >
-                          <option value="">Select staff...</option>
-                          {profiles.filter(p => p.role !== 'manager').map(p => (
-                            <option key={p.id} value={p.id}>{p.full_name}</option>
-                          ))}
-                        </select>
-                      </div>
-                    ) : (
-                      <div className="space-y-1">
-                        <label className="text-[9px] font-bold font-display uppercase tracking-wider text-slate-400 dark:text-slate-500">Choose Today's Shift</label>
-                        <select 
-                          value={taskShiftId}
-                          onChange={(e) => setTaskShiftId(e.target.value)}
-                          required
-                          className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-300 outline-none"
-                        >
-                          <option value="">Select shift...</option>
-                          {weekShifts.filter(s => s.user_id !== 'open').map(s => {
-                            const empName = profiles.find(p => p.id === s.user_id)?.full_name || "Employee";
-                            return (
-                              <option key={s.id} value={s.id}>
-                                {s.shift_date} ({s.start_time} - {s.end_time}) • {empName}
-                              </option>
-                            );
-                          })}
-                        </select>
-                      </div>
-                    )}
-
-                    <button 
-                      type="submit"
-                      className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[9px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 cursor-pointer"
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                      <span>Dispatch Custom Task</span>
-                    </button>
-                  </form>
-
-                  {/* Cinnabon Time-wise Preset Shortcuts */}
-                  <div className="mt-4 pt-3 border-t border-[#e2e8f0] dark:border-[#1f212e] space-y-2">
-                    <p className="text-[9px] font-bold font-display uppercase tracking-widest text-slate-400 dark:text-slate-500 leading-none">⚡ 1-Click Time-wise Presets</p>
-                    
-                    <div className="grid grid-cols-3 gap-1.5 select-none pt-1">
-                      <button 
-                        onClick={() => handleDispatchTimePreset('morning')}
-                        className="p-2 bg-amber-50 hover:bg-amber-100 border border-amber-100 rounded-xl text-[8px] font-bold font-display text-amber-700 flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
-                        title="Assign Morning Opening Bake tasks to scheduled morning staff"
-                      >
-                        <span>🌅</span>
-                        <span>Morning</span>
-                      </button>
-                      
-                      <button 
-                        onClick={() => handleDispatchTimePreset('midday')}
-                        className="p-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-100 rounded-xl text-[8px] font-bold font-display text-indigo-750 flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
-                        title="Assign Mid-day Clean & Coffee tasks to midday staff"
-                      >
-                        <span>☕</span>
-                        <span>Midday</span>
-                      </button>
-                      
-                      <button 
-                        onClick={() => handleDispatchTimePreset('evening')}
-                        className="p-2 bg-[#090a0f] dark:bg-[#090a0f] hover:bg-black border border-slate-800 rounded-xl text-[8px] font-bold font-display text-white flex flex-col items-center justify-center text-center gap-1 cursor-pointer transition-all active:scale-[0.96]"
-                        title="Assign Evening Closeout Security tasks to closing staff"
-                      >
-                        <span>🔐</span>
-                        <span>Evening</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 p-2.5 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl text-[9px] text-slate-400 dark:text-slate-500 font-bold leading-normal">
-                  🚀 Dispatched tasks sync instantly to the employees' active checklists.
-                </div>
-              </div>
-
-            </div>
-
-            {/* E. Innovation 4: Compliance Incident DVR & timeline scrubber */}
-            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl p-6 shadow-sm">
-              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-[#e2e8f0] dark:border-[#1f212e] pb-4 mb-4">
-                <div>
-                  <h4 className="font-bold font-display text-sm text-slate-800 dark:text-slate-200 leading-none">🎛️ Compliance Incident DVR & Overrides</h4>
-                  <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Visual compliance timelines - scrub days to audit & log legal override arguments</p>
-                </div>
-                <div className="flex gap-2">
-                  <span className="px-2.5 py-1 bg-rose-50 border border-rose-100 text-rose-600 font-bold font-display text-[9px] rounded-xl uppercase tracking-wider">
-                    {criticalCount} critical award breaches
-                  </span>
-                  <span className="px-2.5 py-1 bg-amber-50 border border-amber-100 text-amber-600 font-bold font-display text-[9px] rounded-xl uppercase tracking-wider">
-                    {warningCount} active safety warnings
-                  </span>
-                </div>
-              </div>
-
-              {/* timeline day scrubber */}
-              <div className="grid grid-cols-7 gap-1 font-bold font-display text-[10px] text-center select-none bg-[#f8fafc] dark:bg-[#090a0f] p-2 rounded-xl border border-[#e2e8f0] dark:border-[#1f212e]">
-                {weekDates.map((dStr, idx) => {
-                  const dayName = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"][idx];
-                  const displayDate = dStr.split('-').slice(2).join('/');
-                  const dayIncidents = activeIncidents.filter(inc => inc.shift.shift_date === dStr);
-                  const isHoliday = dStr === weekDates[3];
-
-                  let pillColor = 'border-[#e2e8f0] dark:border-[#1f212e] text-slate-400 dark:text-slate-500 hover:bg-slate-100 dark:bg-[#090a0f]';
-                  if (dayIncidents.length > 0) {
-                    pillColor = dayIncidents.some(i => i.isCritical)
-                      ? 'border-rose-200 text-rose-700 bg-rose-50/50 hover:bg-rose-50'
-                      : 'border-amber-200 text-amber-700 bg-amber-50/50 hover:bg-amber-50';
-                  }
-                  if (selectedIncidentDay === idx) {
-                    pillColor = 'border-indigo-600 bg-indigo-600 text-white';
-                  }
-
-                  return (
-                    <div 
-                      key={idx}
-                      onClick={() => setSelectedIncidentDay(idx)}
-                      className={`border rounded-xl p-2 cursor-pointer transition-all ${pillColor}`}
-                    >
-                      <p>{dayName}</p>
-                      <p className="text-[8px] font-bold opacity-80 mt-0.5">{displayDate}</p>
-                      {dayIncidents.length > 0 && selectedIncidentDay !== idx && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 inline-block mt-1" />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Incidents under scrubbing date */}
-              <div className="mt-4 space-y-3">
-                {(() => {
-                  const scrubDate = weekDates[selectedIncidentDay];
-                  const dayIncidents = activeIncidents.filter(inc => inc.shift.shift_date === scrubDate);
-
-                  if (dayIncidents.length === 0) {
-                    return (
-                      <div className="bg-emerald-50/50 border border-emerald-100 rounded-xl p-6 text-center text-emerald-800 font-bold text-xs flex flex-col items-center justify-center space-y-2">
-                        <CheckCircle className="w-8 h-8 text-emerald-500" />
-                        <p>No compliance warnings or Fast Food Award breaches logged for this day! 100% legal schedule.</p>
-                      </div>
-                    );
-                  }
-
-                  return (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {dayIncidents.map((inc, iIdx) => {
-                        const sId = inc.shift.id;
-                        const isOverridden = !!complianceOverrides[sId];
-
-                        return (
-                          <div 
-                            key={iIdx}
-                            className={`border rounded-xl p-5 transition-all ${
-                              isOverridden ? 'bg-emerald-50/30 border-emerald-300' : inc.isCritical ? 'bg-rose-50/30 border-rose-300' : 'bg-amber-50/30 border-amber-300'
-                            }`}
-                          >
-                            <div className="flex justify-between items-start">
-                              <div className="flex items-center gap-2">
-                                <span className={`px-2 py-0.5 rounded text-[8px] font-bold font-display uppercase tracking-wider ${
-                                  isOverridden ? 'bg-emerald-100 text-emerald-700' : inc.isCritical ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'
-                                }`}>
-                                  {isOverridden ? 'Authorized Override' : inc.isCritical ? 'Critical Award Breach' : 'Award Warning'}
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold">Shift: {inc.shift.start_time} - {inc.shift.end_time}</p>
-                            </div>
-
-                            <p className="text-xs font-bold font-display text-slate-800 dark:text-slate-200 mt-2.5">{inc.employee?.full_name}: {inc.message}</p>
-
-                            {isOverridden ? (
-                              <div className="mt-3 bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-[10px] text-emerald-800 font-bold">
-                                📝 **Manager Justification logged:** {complianceOverrides[sId]}
-                                <button 
-                                  onClick={() => setComplianceOverrides(prev => { const c = { ...prev }; delete c[sId]; return c; })}
-                                  className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:text-slate-400 dark:text-slate-500 block mt-1 hover:underline cursor-pointer"
-                                >
-                                  Remove justification
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="mt-3 flex gap-2">
-                                <input 
-                                  type="text" 
-                                  placeholder="Type manager override justification..."
-                                  id={`override-input-${sId}`}
-                                  className="flex-grow bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-3 py-1.5 text-[10px] font-bold text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter' && e.target.value.trim() !== '') {
-                                      const text = e.target.value.trim();
-                                      setComplianceOverrides(prev => ({ ...prev, [sId]: text }));
-                                      e.target.value = '';
-                                    }
-                                  }}
-                                />
-                                <button 
-                                  onClick={() => {
-                                    const el = document.getElementById(`override-input-${sId}`);
-                                    if (el && el.value.trim() !== '') {
-                                      setComplianceOverrides(prev => ({ ...prev, [sId]: el.value.trim() }));
-                                      el.value = '';
-                                    }
-                                  }}
-                                  className="bg-slate-800 hover:bg-[#090a0f] dark:bg-[#090a0f] text-white px-3 py-1.5 rounded-xl text-[9px] font-bold font-display uppercase tracking-wider select-none cursor-pointer"
-                                >
-                                  Authorize
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })()}
-              </div>
             </div>
 
           </div>
@@ -3241,45 +3616,60 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
               <div className="flex items-center gap-4">
                 {/* nav arrows */}
-                <div className="flex gap-1">
+                <div className="flex items-center bg-[#f8fafc] dark:bg-[#090a0f] border border-slate-200/50 dark:border-white/10 rounded-xl p-1 shadow-inner">
                   <button 
                     onClick={() => setWeekOffset(prev => prev - 1)}
-                    className="p-2.5 bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-slate-100 dark:bg-[#090a0f] text-slate-500 dark:text-slate-450 rounded-xl active:scale-95 transition-all cursor-pointer"
+                    className="p-2 hover:bg-white dark:hover:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-400 rounded-lg active:scale-95 transition-all cursor-pointer"
                   >
-                    <ChevronLeft className="w-4 h-4" />
+                    <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
-                  <div className="px-5 py-2.5 bg-[#f8fafc] dark:bg-[#090a0f] rounded-xl text-xs font-bold font-display text-slate-700 dark:text-slate-300 min-w-[150px] text-center">
+                  <div className="px-4 text-xs font-bold font-display text-slate-700 dark:text-slate-300 min-w-[140px] text-center select-none">
                     {weekDisplay}
                   </div>
                   <button 
                     onClick={() => setWeekOffset(prev => prev + 1)}
-                    className="p-2.5 bg-[#f8fafc] dark:bg-[#090a0f] hover:bg-slate-100 dark:bg-[#090a0f] text-slate-500 dark:text-slate-450 rounded-xl active:scale-95 transition-all cursor-pointer"
+                    className="p-2 hover:bg-white dark:hover:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-400 rounded-lg active:scale-95 transition-all cursor-pointer"
                   >
-                    <ChevronRight className="w-4 h-4" />
+                    <ChevronRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 
                 {/* Stats highlights */}
-                <div className="hidden lg:flex gap-4 border-l border-[#e2e8f0] dark:border-[#1f212e] pl-4 text-[10px] uppercase font-bold font-display tracking-wider text-slate-400 dark:text-slate-500">
-                  <div>
-                    <span className="text-[8px] block font-bold text-slate-400 dark:text-slate-500">Labor Spend</span>
-                    <span className="text-sm font-bold font-display text-slate-700 dark:text-slate-300">${totalLaborSpend.toFixed(2)}</span>
+                <div className="hidden lg:flex gap-2.5 border-l border-slate-100 dark:border-white/5 pl-4 select-none">
+                  {/* Card 1: Labor Spend */}
+                  <div className="bg-slate-50/50 dark:bg-white/5 border border-slate-100/70 dark:border-white/5 rounded-xl px-3 py-1.5 flex flex-col justify-center min-w-[95px] shadow-sm transition-all duration-300 hover:shadow-md">
+                    <span className="text-[7px] block font-extrabold text-slate-450 dark:text-slate-500 uppercase tracking-widest leading-none">Labor Spend</span>
+                    <span className="text-xs font-black font-display text-slate-885 dark:text-slate-200 mt-1 leading-none">${totalLaborSpend.toFixed(2)}</span>
                   </div>
-                  <div>
-                    <span className="text-[8px] block font-bold text-slate-400 dark:text-slate-500">Remaining Balance</span>
-                    <span className={`text-sm font-bold font-display ${(budgetTarget - totalLaborSpend) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
+                  
+                  {/* Card 2: Remaining Balance */}
+                  <div className="bg-emerald-50/40 dark:bg-emerald-950/20 border border-emerald-100/30 dark:border-emerald-900/10 rounded-xl px-3 py-1.5 flex flex-col justify-center min-w-[95px] shadow-sm transition-all duration-300 hover:shadow-md">
+                    <span className="text-[7px] block font-extrabold text-emerald-650 dark:text-emerald-500 uppercase tracking-widest leading-none">Remaining</span>
+                    <span className={`text-xs font-black font-display mt-1 leading-none ${(budgetTarget - totalLaborSpend) >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
                       {(budgetTarget - totalLaborSpend) >= 0 
                         ? `$${(budgetTarget - totalLaborSpend).toFixed(2)}` 
                         : `-$${Math.abs(budgetTarget - totalLaborSpend).toFixed(2)}`}
                     </span>
                   </div>
-                  <div>
-                    <span className="text-[8px] block font-bold text-slate-400 dark:text-slate-500">Rostered Hours</span>
-                    <span className="text-sm font-bold font-display text-slate-700 dark:text-slate-300">{totalScheduledHours.toFixed(1)}h</span>
+                  
+                  {/* Card 3: Rostered Hours */}
+                  <div className="bg-indigo-50/40 dark:bg-indigo-950/20 border border-indigo-100/30 dark:border-indigo-900/10 rounded-xl px-3 py-1.5 flex flex-col justify-center min-w-[95px] shadow-sm transition-all duration-300 hover:shadow-md">
+                    <span className="text-[7px] block font-extrabold text-indigo-650 dark:text-indigo-500 uppercase tracking-widest leading-none">Rostered Hrs</span>
+                    <span className="text-xs font-black font-display text-indigo-600 dark:text-indigo-400 mt-1 leading-none">{totalScheduledHours.toFixed(1)}h</span>
                   </div>
-                  <div>
-                    <span className="text-[8px] block font-bold text-slate-400 dark:text-slate-500">Award Breaches</span>
-                    <span className="text-sm font-bold font-display text-rose-600">{criticalCount}</span>
+                  
+                  {/* Card 4: Award Breaches */}
+                  <div className={`border rounded-xl px-3 py-1.5 flex flex-col justify-center min-w-[95px] shadow-sm transition-all duration-300 hover:shadow-md ${
+                    criticalCount > 0 
+                      ? 'bg-rose-50/60 dark:bg-rose-950/30 border-rose-100 dark:border-rose-900/20' 
+                      : 'bg-slate-50/50 dark:bg-white/5 border-slate-100 dark:border-white/5'
+                  }`}>
+                    <span className={`text-[7px] block font-extrabold uppercase tracking-widest leading-none ${
+                      criticalCount > 0 ? 'text-rose-650 dark:text-rose-455' : 'text-slate-400 dark:text-slate-500'
+                    }`}>Breaches</span>
+                    <span className={`text-xs font-black font-display mt-1 leading-none ${
+                      criticalCount > 0 ? 'text-rose-600 dark:text-rose-400' : 'text-slate-500 dark:text-slate-400'
+                    }`}>{criticalCount}</span>
                   </div>
                 </div>
               </div>
@@ -3354,7 +3744,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mt-1">{displayDate}</p>
                     </div>
 
-                    <div className="flex-grow p-3 space-y-3 overflow-y-auto min-h-0">
+                    <div className="flex-grow p-3 space-y-3 overflow-y-auto tabkey-smooth-scroll min-h-0">
                       {dayShifts.map(shift => {
                         const isAssigned = shift.user_id !== 'open';
                         const emp = isAssigned ? profiles.find(p => p.id === shift.user_id) : null;
@@ -3465,8 +3855,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
           <div className="space-y-6 animate-fade-in select-none">
             {/* Header controls redesigned */}
             <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-6 rounded-xl shadow-sm select-none shrink-0">
-              <div>
-                <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Timesheet Approvals</h2>
+              <div className="border-l-4 border-indigo-600 pl-4 py-0.5">
+                <h2 className="text-lg font-black font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">Timesheet Approvals</h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Review and authorize completed shifts before exporting payroll.</p>
               </div>
               <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
@@ -3715,8 +4105,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {managerTab === 'docs' && (
           <div className="space-y-6 animate-fade-in">
             <div className="flex justify-between items-center bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <div>
-                <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Compliance & Policies</h2>
+              <div className="border-l-4 border-emerald-500 pl-4 py-0.5">
+                <h2 className="text-lg font-black font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">Compliance & Policies</h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Manage mandatory employee policy documents, track signature completion, and download audits</p>
               </div>
               <button 
@@ -3877,8 +4267,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 5. SHIFT SWAP REQUESTS TAB */}
         {managerTab === 'swaps' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Shift Swap Approvals</h2>
+            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-amber-500">
+              <h2 className="text-lg font-black font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Shift Swap Approvals</h2>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Review drop postings in the shift market and trade requests submitted by team members</p>
             </div>
 
@@ -4003,8 +4393,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 6. LEAVE REQUESTS TAB */}
         {managerTab === 'leave' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Leave Requests</h2>
+            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-rose-500">
+              <h2 className="text-lg font-black font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Leave Requests</h2>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Review staff annual, sick, or personal leave requests. Approving will automatically clear scheduled grid shifts</p>
             </div>
 
@@ -4077,17 +4467,17 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 7. VARIANCE ANALYTICS TAB */}
         {managerTab === 'reports' && (
           <div className="space-y-6 animate-fade-in select-none">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-6 rounded-xl shadow-sm select-none shrink-0">
-              <div>
-                <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Variance Analytics</h2>
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-6 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-blue-500">
+              <div className="pl-4 py-0.5">
+                <h2 className="text-lg font-black font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">Variance Analytics</h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Compare scheduled labor hours against actual time clock attendance</p>
               </div>
               <div className="flex items-center gap-3 w-full lg:w-auto justify-between lg:justify-end">
                 {/* Date range box navigator */}
-                <div className="flex items-center gap-1.5 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e]/50 rounded-xl p-1 shadow-sm">
+                <div className="flex items-center gap-1.5 bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e]/50 rounded-full p-1 shadow-sm">
                   <button 
                     onClick={() => setWeekOffset(prev => prev - 1)}
-                    className="p-2 hover:bg-white dark:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-450 rounded-xl active:scale-95 transition-all cursor-pointer"
+                    className="p-2 hover:bg-white dark:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-450 rounded-full active:scale-95 transition-all cursor-pointer"
                   >
                     <ChevronLeft className="w-3.5 h-3.5" />
                   </button>
@@ -4096,7 +4486,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                   </div>
                   <button 
                     onClick={() => setWeekOffset(prev => prev + 1)}
-                    className="p-2 hover:bg-white dark:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-450 rounded-xl active:scale-95 transition-all cursor-pointer"
+                    className="p-2 hover:bg-white dark:bg-[#12131a] hover:shadow-sm text-slate-500 dark:text-slate-450 rounded-full active:scale-95 transition-all cursor-pointer"
                   >
                     <ChevronRight className="w-3.5 h-3.5" />
                   </button>
@@ -4176,7 +4566,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs font-bold text-slate-500 dark:text-slate-450 border-collapse">
                         <thead>
-                          <tr className="border-b border-[#e2e8f0] dark:border-[#1f212e] text-[10px] text-slate-400 dark:text-slate-500 font-bold font-display uppercase tracking-wider select-none">
+                          <tr className="border-b border-[#e2e8f0] dark:border-[#1f212e] text-[10px] text-slate-400 dark:border-[#1f212e] text-slate-500 font-bold font-display uppercase tracking-wider select-none">
                             <th className="pb-3">Employee</th>
                             <th className="pb-3 text-center">Scheduled (Hrs)</th>
                             <th className="pb-3 text-center">Clocked (Hrs)</th>
@@ -4224,9 +4614,9 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 8. STAFF / TEAM DIRECTORY TAB */}
         {managerTab === 'staff' && (
           <div className="space-y-6 animate-fade-in">
-            <div className="flex justify-between items-center bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <div>
-                <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Team Directory</h2>
+            <div className="flex justify-between items-center bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-indigo-500">
+              <div className="pl-4 py-0.5">
+                <h2 className="text-lg font-black font-display text-slate-900 dark:text-slate-100 tracking-tight leading-none">Team Directory</h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Review active employee credentials, check iPad Kiosk PIN codes, or batch import staff rosters</p>
               </div>
               <div className="flex gap-2">
@@ -4316,6 +4706,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                       <p>📧 Email: <strong className="text-slate-700 dark:text-slate-300">{p.email}</strong></p>
                       <p>📞 Phone: <strong className="text-slate-700 dark:text-slate-300">{p.phone || 'N/A'}</strong></p>
                       <p>🎂 Birthday: <strong className="text-slate-700 dark:text-slate-300">{birthdayDisplay}</strong></p>
+                      <p>🔗 Xero Unique ID: <strong className="text-sky-600 bg-sky-50 dark:bg-sky-950/40 px-2 py-0.5 rounded font-mono">{p.payroll_id || `XERO-${p.id.toUpperCase().split('-')[1] || p.id.toUpperCase()}`}</strong></p>
                       {!isMgr && (
                         <>
                           <p>🔑 Login Password: <strong className="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded font-mono">{p.temp_password}</strong></p>
@@ -4334,8 +4725,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 9. PAYROLL EXPORT (XERO SYNC) */}
         {managerTab === 'payroll' && (
           <div className="space-y-6 animate-fade-in select-none">
-            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Xero Payroll Integration</h2>
+            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-sky-500">
+              <h2 className="text-lg font-black font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Xero Payroll Integration</h2>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Authenticate OAuth connections and synchronize approved weekly timesheets directly into Xero draft payruns</p>
             </div>
 
@@ -4426,7 +4817,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
                 
                 <h4 className="font-bold font-display text-slate-800 dark:text-slate-200 text-sm mt-4 leading-none">Xero Connection: Active</h4>
-                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Tenant ID: cinnabon-aus-9821</p>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold mt-1">Tenant ID: tabkey-aus-1002</p>
 
                 <div className="w-full bg-emerald-50 border border-emerald-100 p-3 rounded-xl text-[10px] text-emerald-800 font-bold mt-4 select-none">
                   OAuth token authenticated successfully. Pushes will arrive in Draft Payroll instantly.
@@ -4447,8 +4838,8 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         {/* 10. STORE SETTINGS TAB */}
         {managerTab === 'settings' && (
           <div className="space-y-6 animate-fade-in select-none">
-            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0">
-              <h2 className="text-lg font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Store Settings</h2>
+            <div className="bg-white dark:bg-[#12131a] border border-[#e2e8f0] dark:border-[#1f212e] p-5 rounded-xl shadow-sm select-none shrink-0 border-l-4 border-slate-500">
+              <h2 className="text-lg font-black font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Store Settings</h2>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Configure global roster parameters, Award penalty multipliers, and backup local storage databases</p>
             </div>
 
@@ -5086,7 +5477,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
               </p>
               <textarea 
                 rows={6}
-                placeholder="Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours&#10;Gigi Hadid,gigi@cinnaboncarindale.com.au,0499 999 999,2001-04-23,Casual,29.23,0&#10;Zayn Malik,zayn@cinnaboncarindale.com.au,0488 888 888,1998-01-12,Part-Time,32.50,25"
+                placeholder="Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours&#10;Gigi Hadid,gigi@tabkey.com.au,0499 999 999,2001-04-23,Casual,29.23,0&#10;Zayn Malik,zayn@tabkey.com.au,0488 888 888,1998-01-12,Part-Time,32.50,25"
                 value={csvText}
                 onChange={(e) => setCsvText(e.target.value)}
                 className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-mono text-slate-700 dark:text-slate-300 focus:outline-none focus:border-indigo-500"
@@ -5096,7 +5487,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             <div className="flex justify-between items-center pt-2">
               <button 
                 onClick={() => {
-                  setCsvText("Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours\nJulian Alvarez,julian@cinnaboncarindale.com.au,0412 999 888,2000-01-31,Casual,29.23,0\nKylie Jenner,kylie@cinnaboncarindale.com.au,0423 777 666,1999-08-10,Part-Time,33.50,20");
+                  setCsvText("Name,Email,Phone,DOB,Type,HourlyRate,ContractedHours\nJulian Alvarez,julian@tabkey.com.au,0412 999 888,2000-01-31,Casual,29.23,0\nKylie Jenner,kylie@tabkey.com.au,0423 777 666,1999-08-10,Part-Time,33.50,20");
                 }}
                 className="text-[10px] font-bold font-display text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer"
               >
@@ -5135,33 +5526,33 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
             </div>
  
             <div>
-              <h3 className="font-bold font-display text-2xl text-slate-800 dark:text-slate-200 tracking-tight leading-none">Cinnabon Birthday Wish</h3>
+              <h3 className="font-bold font-display text-2xl text-slate-800 dark:text-slate-200 tracking-tight leading-none">TabKey Birthday Wish</h3>
               <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-1">Branded HTML template ready for broadcast</p>
             </div>
  
             <div className="bg-white dark:bg-[#12131a] border border-[#EADCC6]/60 rounded-xl p-5 text-left text-slate-800 dark:text-slate-200 space-y-2 relative shadow-md">
-              <span className="text-[7px] font-bold font-display uppercase tracking-widest text-amber-800 bg-amber-50 px-2 py-0.5 rounded">Cinnabon Birthday Card template</span>
+              <span className="text-[7px] font-bold font-display uppercase tracking-widest text-amber-800 bg-amber-50 px-2 py-0.5 rounded">TabKey Birthday Card template</span>
               <p className="text-xs font-bold font-display text-slate-850">To: {birthdayEmployee.full_name} ({birthdayEmployee.email})</p>
               <p className="text-[10px] text-slate-600 dark:text-slate-400 dark:text-slate-500 leading-relaxed pt-2 border-t border-[#e2e8f0] dark:border-[#1f212e] font-medium">
                 "Happy Birthday {birthdayEmployee.full_name}! 🌀✨ <br />
-                We are so incredibly grateful for your great work at our Cinnabon store! 
-                As a birthday token, here is a voucher for a **Free Box of 4 Cinnamon Scrolls** on your next shift. <br />
+                We are so incredibly grateful for your great work at our store! <br />
+                As a birthday token, here is a voucher for a **Free Coffee & Meal** on your next shift. <br />
                 Have an amazing day! <br />
-                - Sarah and the Cinnabon Team."
+                - TabKey Management."
               </p>
             </div>
  
             <div className="flex gap-2 shrink-0">
               <button 
                 onClick={() => setShowBirthdayModal(false)}
-                className="flex-grow py-3.5 hover:bg-slate-100 dark:bg-[#090a0f] text-slate-500 dark:text-slate-450 rounded-xl font-bold font-display text-[10px] uppercase tracking-wider"
+                className="flex-grow py-3.5 hover:bg-slate-100 dark:bg-[#090a0f] text-slate-500 dark:text-slate-455 rounded-xl font-bold font-display text-[10px] uppercase tracking-wider"
               >
                 Close Preview
               </button>
               <button 
                 onClick={() => {
                   setShowBirthdayModal(false);
-                  alert(`Branded Cinnabon email greeting and voucher successfully dispatched to ${birthdayEmployee.full_name}!`);
+                  alert(`Branded TabKey email greeting and voucher successfully dispatched to ${birthdayEmployee.full_name}!`);
                 }}
                 className="flex-grow py-3.5 bg-indigo-650 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-[10px] uppercase tracking-wider shadow-md shadow-indigo-600/20 transition-all cursor-pointer active:scale-95"
               >
@@ -5252,10 +5643,10 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                   <div className="flex justify-between items-center pb-5 border-b border-[#e2e8f0] dark:border-[#1f212e] select-none">
                     <div className="flex items-center gap-3">
                       <div className="px-4 py-2 bg-indigo-950 text-white font-serif tracking-widest text-lg font-bold font-display uppercase rounded shadow-inner flex items-center justify-center">
-                        CINNABON
+                        TABKEY
                       </div>
                       <div className="text-left">
-                        <h1 className="text-sm font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Cinnabon Westfield Carindale</h1>
+                        <h1 className="text-sm font-bold font-display text-slate-800 dark:text-slate-200 tracking-tight leading-none">Westfield Store Roster</h1>
                         <p className="text-[10px] text-indigo-600 font-bold uppercase tracking-wider mt-1">Compliance Audit Log</p>
                       </div>
                     </div>
@@ -5409,7 +5800,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 <input 
                   type="email" 
                   required
-                  placeholder="e.g. patel@cinnaboncarindale.com.au"
+                  placeholder="e.g. patel@tabkey.com.au"
                   value={newEmployee.email}
                   onChange={(e) => setNewEmployee(prev => ({ ...prev, email: e.target.value }))}
                   className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
@@ -5472,6 +5863,17 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
               </div>
 
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-display uppercase text-slate-400 dark:text-slate-500">Xero Employee Code (Unique Payroll ID)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. XERO-ALEX123 or PAY-101"
+                  value={newEmployee.payroll_id || ''}
+                  onChange={(e) => setNewEmployee(prev => ({ ...prev, payroll_id: e.target.value }))}
+                  className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
+                />
+              </div>
+
               <button 
                 type="submit"
                 className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-xs uppercase tracking-wider shadow-sm transition-all"
@@ -5510,7 +5912,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 <input 
                   type="email" 
                   required
-                  placeholder="e.g. patel@cinnaboncarindale.com.au"
+                  placeholder="e.g. patel@tabkey.com.au"
                   value={editingEmployee.email}
                   onChange={(e) => setEditingEmployee(prev => ({ ...prev, email: e.target.value }))}
                   className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
@@ -5597,6 +5999,17 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </div>
               </div>
 
+              <div className="space-y-1">
+                <label className="text-[10px] font-bold font-display uppercase text-slate-400 dark:text-slate-500">Xero Employee Code (Unique Payroll ID)</label>
+                <input 
+                  type="text" 
+                  placeholder="e.g. XERO-ALEX123 or PAY-101"
+                  value={editingEmployee.payroll_id || ''}
+                  onChange={(e) => setEditingEmployee(prev => ({ ...prev, payroll_id: e.target.value }))}
+                  className="w-full bg-[#f8fafc] dark:bg-[#090a0f] border border-[#e2e8f0] dark:border-[#1f212e] rounded-xl px-4 py-3 text-xs font-bold text-slate-700 dark:text-slate-300 focus:outline-none"
+                />
+              </div>
+
               <button 
                 type="submit"
                 className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold font-display text-xs uppercase tracking-wider shadow-sm transition-all"
@@ -5680,7 +6093,7 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center gap-4 z-[9999] select-none text-white text-center">
           <div className="w-12 h-12 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin" />
           <div>
-            <h3 className="font-bold font-display text-base tracking-wider text-indigo-400">TABKEY ROSTER SOLUTION</h3>
+            <h3 className="font-bold font-display text-base tracking-wider text-indigo-400">TABKEY ROSTER PORTAL</h3>
             <p className="text-xs text-slate-500 dark:text-slate-450 font-bold mt-1">Simulating portal transition and data syncing...</p>
           </div>
         </div>
