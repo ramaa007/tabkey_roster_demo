@@ -2451,18 +2451,18 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
   return (
     <div className={`w-full h-[100dvh] overflow-hidden animate-fade-in relative ${
       managerViewMode === 'mobile' 
-        ? 'bg-slate-950 flex flex-col items-center justify-center p-4 md:p-8 text-center pb-24 md:pb-8' 
+        ? 'bg-[#f8fafc] dark:bg-[#090a0f] md:bg-slate-950 flex flex-col items-center justify-center p-0 md:p-8 text-center pb-0 md:pb-8' 
         : 'bg-[#f8fafc] dark:bg-[#090a0f] flex flex-col md:flex-row'
     }`}>
 
       {managerViewMode === 'mobile' && (
         <>
           {/* Geometric Background Blobs */}
-          <div className="absolute top-[-10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none z-10 animate-pulse" />
-          <div className="absolute bottom-[-10%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-violet-600/10 blur-3xl pointer-events-none z-10" />
+          <div className="absolute top-[-10%] right-[-10%] w-[35rem] h-[35rem] rounded-full bg-indigo-600/10 blur-3xl pointer-events-none z-10 animate-pulse hidden md:block" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-violet-600/10 blur-3xl pointer-events-none z-10 hidden md:block" />
 
           {/* Floating View Switcher at the top of browser window */}
-          <div className="z-30 mb-5 shrink-0 flex items-center justify-center select-none">
+          <div className="z-30 mb-5 shrink-0 hidden md:flex items-center justify-center select-none">
             <button 
               type="button"
               onClick={() => setManagerViewMode('desktop')}
@@ -2745,26 +2745,26 @@ export default function ManagerDashboard({ user, onLogout, onPortalSwitch }) {
                 </h2>
                 <p className="text-xs text-slate-400 dark:text-slate-500 font-bold mt-2 uppercase tracking-wider">Next-Gen Labor Analytics & Roster Forecast Dashboard</p>
               </div>
-              <div className="flex flex-wrap items-center gap-3 select-none">
+              <div className="flex items-center gap-2 sm:gap-3 select-none">
                 {/* Live Date Pill (Enlarged) */}
-                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-indigo-100 dark:border-indigo-500/20 px-5 py-3 rounded-2xl flex items-center gap-3.5 shadow-md hover:scale-[1.02] transition-all">
-                  <Calendar className="w-6 h-6 text-indigo-600 dark:text-indigo-400 animate-pulse" />
+                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-indigo-100 dark:border-indigo-500/20 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3.5 shadow-md hover:scale-[1.02] transition-all">
+                  <Calendar className="w-4.5 h-4.5 sm:w-6 sm:h-6 text-indigo-600 dark:text-indigo-400 animate-pulse" />
                   <div className="text-left">
-                    <p className="text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-widest leading-none">CURRENT DATE</p>
-                    <p className="text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-1 leading-none">
+                    <p className="text-[7.5px] sm:text-[9px] text-indigo-600 dark:text-indigo-400 font-black uppercase tracking-widest leading-none">CURRENT DATE</p>
+                    <p className="text-xs sm:text-base md:text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-0.5 sm:mt-1 leading-none">
                       {new Date().toLocaleDateString('en-AU', { weekday: 'short', day: 'numeric', month: 'short' })}
                     </p>
                   </div>
                 </div>
                 
                 {/* Weather Pill with Micro-Animated Icon (Enlarged) */}
-                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-blue-100 dark:border-blue-500/20 px-5 py-3 rounded-2xl flex items-center gap-3.5 shadow-md hover:scale-[1.02] transition-all">
-                  <div className="w-6 h-6 flex items-center justify-center shrink-0">
+                <div className="bg-white/90 dark:bg-[#12131a]/85 backdrop-blur-md border border-blue-100 dark:border-blue-500/20 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl flex items-center gap-2 sm:gap-3.5 shadow-md hover:scale-[1.02] transition-all">
+                  <div className="w-4.5 h-4.5 sm:w-6 sm:h-6 flex items-center justify-center shrink-0">
                     <WeatherMiniIcon weather={weatherMock} />
                   </div>
                   <div className="text-left">
-                    <p className="text-[9px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest leading-none">FORECAST INTEL</p>
-                    <p className="text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-1 leading-none">
+                    <p className="text-[7.5px] sm:text-[9px] text-blue-600 dark:text-blue-400 font-black uppercase tracking-widest leading-none">FORECAST INTEL</p>
+                    <p className="text-xs sm:text-base md:text-xl font-black font-display text-slate-850 dark:text-slate-100 mt-0.5 sm:mt-1 leading-none">
                       {weatherMock} Weather
                     </p>
                   </div>
